@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useImperativeHandle } from "react";
 import { View } from "react-native";
 import { generateRandomUuid } from "../../../utils/generators";
 import ComponentManifest from '../components/manifest';
@@ -6,9 +6,15 @@ import ComponentManifest from '../components/manifest';
 
 
     
-const NoteBlock = (props) => {
+const NoteBlock = React.forwardRef((props, ref) => {
     const childRef = React.useRef()
     const index = props.index
+    
+
+    useImperativeHandle(ref, () => ({
+        isEmpty:isEmpty,
+        getValue
+    }),[])
 
 
 
@@ -17,9 +23,9 @@ const NoteBlock = (props) => {
     }
 
 
-    const _signalAddParagraphBlock = () => {
-        props.parentMethods
-        console.warn('addBlock')
+    const isEmpty = () => {
+        console.warn('isEmpty', childRef.current.isEmpty())
+        return childRef.current.isEmpty()
     }
 
 
@@ -27,10 +33,15 @@ const NoteBlock = (props) => {
         props.parentMethods.removeComponent(index)
     }
 
+    const getValue = () => {
+        return childRef.current.getValue()
+    }
+
     const signals = {
         signalUnFocused:_signalUnFocused,
         signalAddComponent: props.parentMethods.addComponent,
         signalRemoveComponent: removeNode,
+        signalEditEvent: props.parentMethods.startActivityTimeout,
     }
 
 
@@ -43,6 +54,6 @@ const NoteBlock = (props) => {
         </View>
     )
 
-}
+})
 
 export default NoteBlock

@@ -9,7 +9,8 @@ const NoteTextInput = React.forwardRef((props, ref) => {
 
     useImperativeHandle(ref, () => ({
         focus,
-        isEmpty
+        isEmpty,
+        getValue
     }), [])
 
 
@@ -25,6 +26,11 @@ const NoteTextInput = React.forwardRef((props, ref) => {
         if (isEmpty()){
             props.signals.signalRemoveComponent()
         }
+    }
+
+
+    const getValue = () => {
+        return text
     }
 
 

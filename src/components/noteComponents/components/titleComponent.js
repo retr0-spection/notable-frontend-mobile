@@ -9,7 +9,8 @@ const TitleComponent = React.forwardRef((props, ref) => {
 
     useImperativeHandle(ref, () => ({
         focus,
-        isEmpty
+        isEmpty,
+        getValue
     }), [])
 
 
@@ -18,11 +19,12 @@ const TitleComponent = React.forwardRef((props, ref) => {
     }
 
     const isEmpty = () => {
+        console.warn(text)
         return text.length === 0;
     }
 
-    const _signalEditingDone = () => {
-        props.signals.signalUnFocused()
+    const _signalEditEvent = () => {
+        props.signals.signalEditEvent()
     }
 
     const _signalAddBlock = () => {
@@ -45,6 +47,19 @@ const TitleComponent = React.forwardRef((props, ref) => {
     },[])
 
 
+    const onEdit = (_text) => {
+        setText(_text)
+        props.item.title.value = {length:_text.length, value: _text}
+        _signalEditEvent()
+
+    }
+
+
+    const getValue = () => {
+        return text
+    }
+
+
 
 
 
@@ -55,7 +70,7 @@ const TitleComponent = React.forwardRef((props, ref) => {
                 style={styles.text}
                 placeholder='Untitled'
                 ref={textInputRef}
-                onChangeText={(_text) => setText(_text)}
+                onChangeText={onEdit}
                 onSubmitEditing={onEditingDone}
                 defaultValue={text}
                 selectionColor={'black'}

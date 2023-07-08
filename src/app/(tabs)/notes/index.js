@@ -7,15 +7,35 @@ import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import MasonryList from 'reanimated-masonry-list';
 import { TouchableOpacity } from 'react-native';
-import { Link } from 'expo-router';
+import { Link, useNavigation } from 'expo-router';
 import { useRouter } from 'expo-router';
 import { styles } from '../../../components/screenLayoutComponents/styles';
+import orm from '../../../../redux/orm/schema';
+import { useSelector } from 'react-redux';
+import { selectNotes } from '../../../../redux/slices/noteSlice';
 
 // create a component
 const NotesListView = () => {
     const [selectedHeader, setSelectedHeader] = React.useState(0)
     const router = useRouter()
+    const navigation = useNavigation()
+    const [notes, setNotes] = React.useState([])
+    const noteState = useSelector(selectNotes)
 
+    
+    const getAllNotes = () => {
+        let _tmp = Object.values(noteState)
+        setNotes(_tmp)
+        console.warn('')
+    }
+
+    useEffect(() => {
+        const listener = navigation.addListener('focus', () => {
+            getAllNotes()
+        })
+
+        return listener
+    },[])
 
 
     const data = {
@@ -36,172 +56,19 @@ const NotesListView = () => {
         notesPreview: [
             {   
 
-                hash:'rqwtqenv',
+                id:'rqwtqenv',
                 title: 'AGM Meetings',
                 content: 'Lorem Ipsum is simply dummy text',
                 backgroundColor: '#dccdbc',
                 textColor: 'black',
-                authors: [
-                    {
-                        name: 'John Doe',
-                        profile: 'https://i.pravatar.cc',
-                    },
-                    {
-                        name: 'Jane Doe',
-                        profile: 'https://i.pravatar.cc',
-                    },
-                    {
-                        name: 'Sam',
-                        profile: 'https://i.pravatar.cc',
-                    }
-                ]
-            },
-            {
-                hash:'ewfkljwelkwe',
-                title: 'Circle',
-                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ewfew',
-                backgroundColor: '#1e1e1e',
-                textColor: 'white',
-                authors: [
-                    {
-                        name: 'John Doe',
-                        profile: `https://unsplash.it/400/400?image=${Math.floor(Math.random() * 100)}`,
-                    },
-                    {
-                        name: 'Jane Doe',
-                        profile: `https://unsplash.it/400/400?image=${Math.floor(Math.random() * 100)}`,
-                    },
-                    {
-                        name: 'Sam',
-                        profile: `https://unsplash.it/400/400?image=${Math.floor(Math.random() * 100)}`,
-                    }
-                ]
-            },
-            {
-                hash:'kwefnwek',
-                title: 'Some Text',
-                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ewfew',
-                backgroundColor: '#882afa',
-                textColor: 'white',
-                authors: [
-                    {
-                        name: 'John Doe',
-                        profile: `https://unsplash.it/400/400?image=${Math.floor(Math.random() * 100)}`,
-                    },
-                    {
-                        name: 'Jane Doe',
-                        profile: `https://unsplash.it/400/400?image=${Math.floor(Math.random() * 100)}`,
-                    },
-                    {
-                        name: 'Sam',
-                        profile: `https://unsplash.it/400/400?image=${Math.floor(Math.random() * 100)}`,
-                    }
-                ]
-            },
-            {
-                hash:'qklglqrqek',
-                title: 'Examples',
-                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ewfew',
-                backgroundColor: '#505457',
-                textColor: 'white',
-                authors: [
-                    {
-                        name: 'John Doe',
-                        profile: `https://unsplash.it/400/400?image=${Math.floor(Math.random() * 100)}`,
-                    },
-                    {
-                        name: 'Jane Doe',
-                        profile: `https://unsplash.it/400/400?image=${Math.floor(Math.random() * 100)}`,
-                    },
-                    {
-                        name: 'Sam',
-                        profile: `https://unsplash.it/400/400?image=${Math.floor(Math.random() * 100)}`,
-                    }
-                ]
-            },
-            {
-                hash:'qwfnqknq',
-                title: 'AGM Meetings',
-                content: 'Lorem Ipsum is simply dummy text',
-                backgroundColor: '#dccdbc',
-                textColor: 'black',
-                authors: [
-                    {
-                        name: 'John Doe',
-                        profile: 'https://i.pravatar.cc',
-                    },
-                    {
-                        name: 'Jane Doe',
-                        profile: 'https://i.pravatar.cc',
-                    },
-                    {
-                        name: 'Sam',
-                        profile: 'https://i.pravatar.cc',
-                    }
-                ]
-            },
-            {
-                title: 'Circle',
-                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ewfew',
-                backgroundColor: '#1e1e1e',
-                textColor: 'white',
-                authors: [
-                    {
-                        name: 'John Doe',
-                        profile: `https://unsplash.it/400/400?image=${Math.floor(Math.random() * 100)}`,
-                    },
-                    {
-                        name: 'Jane Doe',
-                        profile: `https://unsplash.it/400/400?image=${Math.floor(Math.random() * 100)}`,
-                    },
-                    {
-                        name: 'Sam',
-                        profile: `https://unsplash.it/400/400?image=${Math.floor(Math.random() * 100)}`,
-                    }
-                ]
-            },
-            {
-                title: 'Some Text',
-                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ewfew',
-                backgroundColor: '#882afa',
-                textColor: 'white',
-                authors: [
-                    {
-                        name: 'John Doe',
-                        profile: `https://unsplash.it/400/400?image=${Math.floor(Math.random() * 100)}`,
-                    },
-                    {
-                        name: 'Jane Doe',
-                        profile: `https://unsplash.it/400/400?image=${Math.floor(Math.random() * 100)}`,
-                    },
-                    {
-                        name: 'Sam',
-                        profile: `https://unsplash.it/400/400?image=${Math.floor(Math.random() * 100)}`,
-                    }
-                ]
-            },
-            {
-                title: 'Examples',
-                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor ewfew',
-                backgroundColor: '#505457',
-                textColor: 'white',
-                authors: [
-                    {
-                        name: 'John Doe',
-                        profile: `https://unsplash.it/400/400?image=${Math.floor(Math.random() * 100)}`,
-                    },
-                    {
-                        name: 'Jane Doe',
-                        profile: `https://unsplash.it/400/400?image=${Math.floor(Math.random() * 100)}`,
-                    },
-                    {
-                        name: 'Sam',
-                        profile: `https://unsplash.it/400/400?image=${Math.floor(Math.random() * 100)}`,
-                    }
-                ]
-            },
-
-
+                // authors: [
+                //     {
+                //         name: 'John Doe',
+                //         profile: 'https://i.pravatar.cc',
+                //     }
+                // ]
+            }
+        
         ],
     }
 
@@ -218,29 +85,28 @@ const NotesListView = () => {
 
 
     const renderNotePreview = ({ item, index }) => {
-        const transparent = `rgba(${item.backgroundColor.substring(1, 3)},${item.backgroundColor.substring(3, 5)},${item.backgroundColor.substring(5, 7)},0.0000001)`
 
         return (
            
-                <TouchableOpacity key={`notePreview-${index}`} style={{ width: '48%', backgroundColor: item.backgroundColor, padding: 10, paddingBottom: 40, borderRadius: 15, marginVertical: '1%', marginHorizontal: '1%' }}
+                <TouchableOpacity key={`notePreview-${index}`} style={{ width: '48%', backgroundColor: 'yellow', padding: 10, paddingBottom: 40, borderRadius: 15, marginVertical: '1%', marginHorizontal: '1%' }}
                     onPress={() => {
                         router.push(`/notes/${item.hash}`)
                     }}
                 
                 >
                     {/* title */}
-                    <View>
+                   {item.title ? <View>
                         <Text style={{ fontSize: 18, fontWeight: 'bold', color: item.textColor }} numberOfLines={2} ellipsizeMode='tail'>{item.title}</Text>
-                    </View>
+                    </View> : null}
                     {/* body-preview */}
-                    <View>
+                    {item.content ?<View>
                         <View style={{ paddingBottom: 5, }}>
                             <Text style={{ fontSize: 16, color: item.textColor }} numberOfLines={4} ellipsizeMode='tail'>{item.content}</Text>
                         </View>
-                    </View>
+                    </View> : null}
 
                     {/* authors */}
-                    <View style={{ flexDirection: 'row', paddingTop: 15, position: 'absolute', bottom: 10, left: 10, right: 0 }}>
+                   {item.authors ? <View style={{ flexDirection: 'row', paddingTop: 15, position: 'absolute', bottom: 10, left: 10, right: 0 }}>
                         {item.authors.map((author, index) => {
                             return (
                                 <View key={index} style={{ marginRight: 5 }}>
@@ -248,7 +114,7 @@ const NotesListView = () => {
                                 </View>
                             )
                         })}
-                    </View>
+                    </View> : null}
 
                 </TouchableOpacity>
         )
@@ -263,7 +129,7 @@ const NotesListView = () => {
                 </View>
 
                 <FlatList
-                    data={data.notesPreview}
+                    data={notes}
                     numColumns={2}
                     renderItem={renderNotePreview}
                     contentContainerStyle={{ paddingHorizontal: '3%', paddingTop: '5%', paddingBottom:50 }}

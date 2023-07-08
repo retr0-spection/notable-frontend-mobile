@@ -2,7 +2,7 @@ import { Stack } from 'expo-router';
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Provider } from 'react-redux';
-import store from '../../redux/store';
+import {store} from '../../redux/store';
 
 
 
