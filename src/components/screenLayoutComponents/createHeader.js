@@ -22,7 +22,9 @@ const CreateHeader = (props) => {
 
             {/*  note buttons/settings  */}
           <View style={{flexDirection:'row'}}>
-
+                {/* <TouchableOpacity onPress={props.save}>
+                    <Text style={{fontSize:18, fontWeight:'bold'}}>Save</Text>
+                </TouchableOpacity> */}
           </View>
         </View>
     );

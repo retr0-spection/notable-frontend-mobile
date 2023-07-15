@@ -9,7 +9,7 @@ import MasonryList from 'reanimated-masonry-list';
 import { TouchableOpacity } from 'react-native';
 import { Link, useNavigation } from 'expo-router';
 import { useRouter } from 'expo-router';
-import { styles } from '../../../components/screenLayoutComponents/styles';
+import { noteBackgroundColour, styles } from '../../../components/screenLayoutComponents/styles';
 import orm from '../../../../redux/orm/schema';
 import { useSelector } from 'react-redux';
 import { selectNotes } from '../../../../redux/slices/noteSlice';
@@ -25,17 +25,21 @@ const NotesListView = () => {
     
     const getAllNotes = () => {
         let _tmp = Object.values(noteState)
+        console.warn(_tmp)
         setNotes(_tmp)
-        console.warn('')
     }
 
     useEffect(() => {
         const listener = navigation.addListener('focus', () => {
             getAllNotes()
+
         })
 
         return listener
-    },[])
+
+    },[noteState])
+
+
 
 
     const data = {
@@ -59,7 +63,7 @@ const NotesListView = () => {
                 id:'rqwtqenv',
                 title: 'AGM Meetings',
                 content: 'Lorem Ipsum is simply dummy text',
-                backgroundColor: '#dccdbc',
+                backgroundColor: noteBackgroundColour,
                 textColor: 'black',
                 // authors: [
                 //     {
@@ -78,30 +82,33 @@ const NotesListView = () => {
                 {index == selectedHeader ?
                     <View key={`header-${index}`} style={{ borderBottomWidth: 2, borderBottomColor: 'black', alignSelf: 'flex-start', padding: 2, }}>
                         <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{item.title}</Text>
-                    </View> : null}
+                    </View> : null
+                }
             </>
         )
     }
 
 
     const renderNotePreview = ({ item, index }) => {
-
+        const blocks = item.blocks
+        const previewBlock = blocks.length > 1 ? blocks[1].payload : null
+        console.warn(previewBlock)
         return (
            
-                <TouchableOpacity key={`notePreview-${index}`} style={{ width: '48%', backgroundColor: 'yellow', padding: 10, paddingBottom: 40, borderRadius: 15, marginVertical: '1%', marginHorizontal: '1%' }}
+                <TouchableOpacity key={`notePreview-${index}`} style={{ width: '48%', backgroundColor: noteBackgroundColour, padding: 10, paddingBottom: 40, borderRadius: 15, marginVertical: '1%', marginHorizontal: '1%' }}
                     onPress={() => {
-                        router.push(`/notes/${item.hash}`)
+                        router.push(`/notes/${item.hash}`, {note:item})
                     }}
                 
                 >
                     {/* title */}
                    {item.title ? <View>
-                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: item.textColor }} numberOfLines={2} ellipsizeMode='tail'>{item.title}</Text>
+                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'white' }} numberOfLines={2} ellipsizeMode='tail'>{item.title}</Text>
                     </View> : null}
                     {/* body-preview */}
-                    {item.content ?<View>
-                        <View style={{ paddingBottom: 5, }}>
-                            <Text style={{ fontSize: 16, color: item.textColor }} numberOfLines={4} ellipsizeMode='tail'>{item.content}</Text>
+                    {previewBlock ?<View>
+                        <View>
+                            <Text style={{ fontSize: 16, color: 'white' }} numberOfLines={2} ellipsizeMode='tail'>{previewBlock.content}</Text>
                         </View>
                     </View> : null}
 

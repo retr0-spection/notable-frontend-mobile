@@ -16,7 +16,7 @@ import NoteLayout from '../../../components/screenLayoutComponents/noteLayout';
 const CreateView = (props) => {
 
     return (
-        <NoteLayout />
+        <NoteLayout new />
     )
 
 }

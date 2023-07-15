@@ -10,7 +10,8 @@ const NoteTextInput = React.forwardRef((props, ref) => {
     useImperativeHandle(ref, () => ({
         focus,
         isEmpty,
-        getValue
+        getValue,
+        setPayload
     }), [])
 
 
@@ -28,6 +29,24 @@ const NoteTextInput = React.forwardRef((props, ref) => {
         }
     }
 
+    const _signalEditEvent = () => {
+        props.signals.signalEditEvent()
+    }
+
+    const setPayload = (payload) => {
+        setText(payload.content)
+    }
+
+    const _dumpState = (_text) => {
+        return {
+            type: 'ParagraphComponent',
+            id: props.item.id,
+            payload:{
+                content :_text
+            }
+        }
+    }
+
 
     const getValue = () => {
         return text
@@ -36,9 +55,19 @@ const NoteTextInput = React.forwardRef((props, ref) => {
 
     // focus on creation
     useEffect(() => {
-        textInputRef.current.focus()
-    }, [])
+        if (props.autoFocus){
+            textInputRef.current.focus()
+        }
+    },[])
 
+    const onEdit = (_text) => {
+        setText(_text)
+        props.signals.signalUpdateChildState(_dumpState(_text))
+
+        _signalEditEvent()
+
+
+    }
 
 
 
@@ -50,8 +79,9 @@ const NoteTextInput = React.forwardRef((props, ref) => {
                 style={styles.text}
                 placeholder=''
                 ref={textInputRef}
-                onChangeText={(_text) => setText(_text)}
+                onChangeText={onEdit}
                 multiline
+                defaultValue={text}
                 selectionColor={'black'}
                 onEndEditing={_signalEditingDone}
 

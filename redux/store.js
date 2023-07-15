@@ -17,10 +17,11 @@ const persistedReducer = persistReducer(persistConfig, notesReducer)
 
 
 const store = configureStore({
-    reducer:persistedReducer,
+    reducer:notesReducer,
     middleware:[logger]
 })
 
 const persistor = persistStore(store)
 
-export  {store, persistor};
+// export  {store, persistor};
+export {store}

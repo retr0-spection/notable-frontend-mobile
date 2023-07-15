@@ -2,18 +2,20 @@
 import React, { Component, useEffect, useImperativeHandle } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 import { generateRandomUuid } from '../../../utils/generators';
+import { useNavigation } from 'expo-router';
 
 // create a component
-const TitleComponent = React.forwardRef((props, ref) => {
+const TitleHeader = React.forwardRef((props, ref) => {
     const textInputRef = React.useRef()
-    const [text, setText] = React.useState('')
+    const navigation = useNavigation()
+    const [text, setText] = React.useState(props.initial)
 
     useImperativeHandle(ref, () => ({
         focus,
         isEmpty,
         getValue,
-        _dumpState,
-        setPayload
+        setPayload,
+        clear
     }))
 
 
@@ -22,20 +24,23 @@ const TitleComponent = React.forwardRef((props, ref) => {
     }
 
     const isEmpty = () => {
-        console.warn(text)
         return text.length === 0;
     }
 
     const _signalEditEvent = () => {
-        props.signals.signalEditEvent()
+        props.parentMethods.startActivityTimeout()
     }
 
     const setPayload = (payload) => {
-        setText(payload.content)
+        setText(payload)
+    }
+    const clear = () => {
+        setText('')
+        textInputRef.current.clear()
     }
 
     const _signalAddBlock = () => {
-       if (props.blocks.length == 1){
+       if (props.blocks.length === 0){
             const _newNoteBlockTemplate = {
                 id: generateRandomUuid(),
                 type: 'ParagraphComponent',
@@ -43,29 +48,15 @@ const TitleComponent = React.forwardRef((props, ref) => {
                 focus:true
     
             }
-            props.signals.signalAddComponent(_newNoteBlockTemplate)
+            props.parentMethods.addComponent(_newNoteBlockTemplate)
         }else{
-            // focus on next block
+            // focus on first block
+            console.warn(props.blockRefs)
             props.blockRefs.current[props.blocks[1].id].focus()
         }
     }
 
-    const _dumpState = (_text) => {
-
-        return {
-            type: 'TitleComponent',
-            id:props.item.id,
-            payload:{
-                content :_text
-            }
-        }
-    }
-
-
     const onEditingDone = () => {
-        if (isEmpty() && props.index !== 0){
-            props.signals.signalRemoveComponent()
-        }
         textInputRef.current.blur();
         _signalAddBlock()
     }
@@ -77,18 +68,16 @@ const TitleComponent = React.forwardRef((props, ref) => {
     },[])
 
 
+
     const onEdit = (_text) => {
         setText(_text)
-        props.signals.signalUpdateChildState(_dumpState(_text))
         _signalEditEvent()
 
     }
 
-
     const getValue = () => {
         return text
     }
-
 
 
 
@@ -102,7 +91,7 @@ const TitleComponent = React.forwardRef((props, ref) => {
                 ref={textInputRef}
                 onChangeText={onEdit}
                 onSubmitEditing={onEditingDone}
-                defaultValue={text}
+                defaultValue={props.initial}
                 selectionColor={'black'}
             />
         </View>
@@ -117,4 +106,4 @@ const styles = StyleSheet.create({
 })
 
 //make this component available to the app
-export default TitleComponent;
+export default TitleHeader;

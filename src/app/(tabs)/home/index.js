@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FastImage from 'react-native-fast-image';
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
@@ -8,9 +8,12 @@ import { ScrollView } from 'react-native';
 import { FlatList } from 'react-native';
 import { getDateAsString, getMonthAsString, getShortMonthAsString, getTimeAsString, getTimeOfDay } from '../../../utils/dateHelpers';
 import { styles } from '../../../components/screenLayoutComponents/styles';
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import { router } from 'expo-router';
+
 
 // create a component
-const Home = () => {
+const Home = (props) => {
     const date = new Date()
     const data = [{
         date: new Date(2023, 6),
@@ -183,6 +186,7 @@ const Home = () => {
 
                 />
             </View>
+           
         </SafeAreaView>
     );
 };
