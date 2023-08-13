@@ -1,5 +1,5 @@
 //import liraries
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { View, ScrollView, SafeAreaView, InputAccessoryView, KeyboardAvoidingView, Text, Keyboard } from 'react-native';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { cancelAnimation, runOnJS, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -12,6 +12,11 @@ import { addNoteEntry, deleteNoteEntry } from '../../../redux/slices/noteSlice';
 import { generateRandomUuid } from '../../utils/generators';
 import NoteCanvas from '../noteComponents/canvas/noteCanvas';
 import OptionsComponent from '../inputComponents/optionsComponent';
+import ActionSheet, { SheetManager, SheetProvider, registerSheet } from "react-native-actions-sheet";
+import OptionsModal from '../modals/note/optionsModal';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { deleteNote } from '../../utils/actions/noteActions';
+
 
 
 // create a component
@@ -22,13 +27,15 @@ const NoteLayout = (props) => {
     const noteBlocksRef = React.useRef({})
     const navigation = useNavigation()
     const router = useRouter()
-    const [init, setInit] = React.useState(params.id || null)
+    const init = React.useRef(params.id || null)
     const [refresh, setRefresh] = React.useState(false)
     const [title, setTitle] = React.useState('')
     const titleRef = React.useRef()
     const inactivityTimer = useSharedValue(0)
     const dispatch = useDispatch()
     const [notes, setNotes] = React.useState(useSelector(state => state.notes[params.id]))
+    const [focusedBlock, setFocusedBlock] = React.useState(null)
+
 
     const addComponent = (template) => {
         // create new noteBlock
@@ -36,6 +43,31 @@ const NoteLayout = (props) => {
         setNoteBlocks([...noteBlocks, template])
     }
 
+    const removeNote = () => {
+        navigation.goBack()
+        deleteNote(dispatch, {hash:init.current})
+    }
+
+
+    const options = useMemo(() => [
+        {
+            icon : <Ionicons name="trash" size={25} color="red" />,
+            title : 'Delete Note',
+            titleColor: 'red',
+            action: removeNote
+        }
+    ],[init.current])
+
+    useEffect(() => {
+        // register sheets
+        const captureModal =  <OptionsModal id={'optionsModal'} options={options} />
+        registerSheet('optionsModal',() => captureModal,'global', 'optionsSheet')
+      },
+      [])
+    
+      const openOptions = () => {
+       SheetManager.show("optionsModal", {payload:{init}, context:'optionsSheet'})
+      }
 
 
 
@@ -54,11 +86,19 @@ const NoteLayout = (props) => {
     const saveNote = () => {
         cancelAnimation(inactivityTimer)
         inactivityTimer.value = 0
-        const data = { hash: init, blocks: [] }
+        const data = { hash: init.current, blocks: [] }
         // add title
-        data['title'] = titleRef.current.getValue()
+        const _title = titleRef.current.getValue()
 
-        
+        if (_title !== null){
+            data['title'] = _title 
+        }else{
+            data['title'] = title 
+
+        }
+
+
+        // check if body exists
         
         if (noteBlocks.length) {
             // do blocks exist
@@ -75,15 +115,12 @@ const NoteLayout = (props) => {
         } else {
             // check if title exists
             if (data['title'].length) {
+                console.warn('hit', data['title'])
                 dispatch(addNoteEntry(data))
             } else {
                 // delete if none
-                const data = {
-                    hash: init
-                }
-                console.warn('deleting note')
+                deleteNote(dispatch, data)
 
-                dispatch(deleteNoteEntry(data))
             }
         }
     }
@@ -93,8 +130,10 @@ const NoteLayout = (props) => {
     useEffect(() => {
         const listener = navigation.addListener('blur', () => {
             saveNote()
-            setInit(null)
-            titleRef.current.clear()
+            init.current = null
+            if (props.new){
+                titleRef.current.clear()
+            }
             setNoteBlocks([])
         })
 
@@ -106,8 +145,11 @@ const NoteLayout = (props) => {
     useEffect(() => {
         const listener = navigation.addListener('beforeRemove', () => {
             saveNote()
-            setInit(null)
-            titleRef.current.clear()
+            init.current = null
+
+            if (props.new){
+                titleRef.current.clear()
+            }
             setNoteBlocks([])
         })
 
@@ -137,7 +179,8 @@ const NoteLayout = (props) => {
     const parentMethods = {
         addComponent,
         removeComponent,
-        startActivityTimeout
+        startActivityTimeout,
+        setNoteBlocks
     }
 
 
@@ -145,30 +188,22 @@ const NoteLayout = (props) => {
 
 
 
+
     // on initialization add new/existing noteBlocks
+    // listen for screen changes too
     useEffect(() => {
-        if (props.new) {
-            const listener = navigation.addListener('focus', () => {
-                // if (noteBlocks.length === 0) {
-                //     const _newNoteBlockTemplate = {
-                //         id: generateRandomUuid(),
-                //         type: 'TitleComponent',
-                //         payload: null,
-                //         focus: true
-
-                //     }
-                //     addComponent(_newNoteBlockTemplate)
-                // }
+        
+        const setup = () => {
+            if (props.new) {
                 const id = generateRandomUuid()
-                setInit(id)
+                init.current = id
 
-            })
-            return listener
+            // })
+            // return listener
         } else {
-            const listener = navigation.addListener('focus', () => {
+            // const listener = navigation.addListener('focus', () => {
                 // set title
                 setTitle(notes.title)
-                console.warn(notes.title)
                 // set blocks
                 const blocks = []
                 notes.blocks.map((item, index) => {
@@ -177,9 +212,13 @@ const NoteLayout = (props) => {
                 })
                 setNoteBlocks(blocks)
                 console.warn('restoring data', notes.blocks)
-            })
-            return listener
+            // })
         }
+        }
+
+
+        const listener = navigation.addListener('focus',setup)
+        return listener
 
     }, [])
 
@@ -195,7 +234,7 @@ const NoteLayout = (props) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <CreateHeader save={saveNote} />
+            <CreateHeader save={saveNote} options={openOptions} />
             <View style={[styles.spanParent, { paddingTop: '5%' }]}>
                 {/* canvas body */}
                 <NoteCanvas
@@ -206,10 +245,13 @@ const NoteLayout = (props) => {
                     noteBlocksRef={noteBlocksRef}
                     parentMethods={parentMethods}
                     autoFocus={props.new}
+                    setFocusedBlock={setFocusedBlock}
                 />
             </View>
 
-            <OptionsComponent addComponent={addComponent} />
+            <OptionsComponent  noteBlocksRef={noteBlocksRef} focusedBlock={focusedBlock}  addComponent={addComponent} />
+            <SheetProvider context="optionsSheet">
+            </SheetProvider>
         </SafeAreaView>
 
     );

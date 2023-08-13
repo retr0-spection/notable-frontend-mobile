@@ -18,7 +18,8 @@ const NoteBlock = React.forwardRef((props, ref) => {
         getValue,
         ready,
         getType,
-        focus
+        focus,
+        replaceComponent
     }),[childState])
 
 
@@ -54,11 +55,16 @@ const NoteBlock = React.forwardRef((props, ref) => {
         console.warn('unfocused')
     }
 
+    const _signalFocused = (payload) => {
+        props.setFocusedBlock(payload)
+    }
+
 
     const _setPayload = (payload) => {
         childRef.current.setPayload(payload)
 
     }
+
 
 
     const isEmpty = () => {
@@ -71,21 +77,29 @@ const NoteBlock = React.forwardRef((props, ref) => {
     }
 
     const getValue = () => {
-        console.warn(childState)
         return childState
     }
 
+    const replaceComponent = (template) => {
+        const blocks = [...props.blocks]
+        blocks[index] = template
+        props.parentMethods.setNoteBlocks(blocks)
+    }
+
+    
 
     const signals = {
         signalUnFocused:_signalUnFocused,
+        signalFocused:_signalFocused,
         signalAddComponent: props.parentMethods.addComponent,
         signalRemoveComponent: removeNode,
         signalEditEvent:props.parentMethods.startActivityTimeout,
         signalUpdateChildState:handleEventEdit,
+        signalReplaceComponent:replaceComponent,
     }
 
 
-    const child = React.cloneElement(ComponentManifest[props.item.type], {ref:childRef, item:props.item, index:index, signals, autoFocus:props.autoFocus, blocks:props.blocks, blockRefs:props.blockRefs})
+    const child = React.cloneElement(ComponentManifest[props.item.type], {ref:childRef, item:props.item, index:index, signals, autoFocus:props.autoFocus, blocks:props.blocks, blockRefs:props.blockRefs, titleRef:props.titleRef})
 
 
     return (

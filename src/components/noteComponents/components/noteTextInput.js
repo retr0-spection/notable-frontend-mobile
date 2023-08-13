@@ -57,6 +57,7 @@ const NoteTextInput = React.forwardRef((props, ref) => {
     useEffect(() => {
         if (props.autoFocus){
             textInputRef.current.focus()
+            
         }
     },[])
 
@@ -69,6 +70,27 @@ const NoteTextInput = React.forwardRef((props, ref) => {
 
     }
 
+    const handleKeyPress = (e) => {
+        const key = e.nativeEvent.key
+
+        //  focus on previous block
+        if (key === 'Backspace' && isEmpty()){
+            props.signals.signalRemoveComponent()
+            if (props.index == 0){
+                // focus on header
+                props.titleRef.current.focus()
+            }else{
+                // focus on preceding block
+                props.blockRefs.current[props.blocks[props.index - 1].id].focus()
+            }
+        }
+
+    }
+
+
+    const onFocus = () => {
+        props.signals.signalFocused(props.item)
+    }
 
 
 
@@ -80,10 +102,12 @@ const NoteTextInput = React.forwardRef((props, ref) => {
                 placeholder=''
                 ref={textInputRef}
                 onChangeText={onEdit}
+                onFocus={onFocus}
                 multiline
                 defaultValue={text}
                 selectionColor={'black'}
                 onEndEditing={_signalEditingDone}
+                onKeyPress={handleKeyPress}
 
             />
         </View>

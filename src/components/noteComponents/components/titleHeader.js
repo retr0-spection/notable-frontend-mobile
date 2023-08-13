@@ -8,7 +8,7 @@ import { useNavigation } from 'expo-router';
 const TitleHeader = React.forwardRef((props, ref) => {
     const textInputRef = React.useRef()
     const navigation = useNavigation()
-    const [text, setText] = React.useState(props.initial)
+    const [text, setText] = React.useState(null)
 
     useImperativeHandle(ref, () => ({
         focus,
@@ -51,8 +51,7 @@ const TitleHeader = React.forwardRef((props, ref) => {
             props.parentMethods.addComponent(_newNoteBlockTemplate)
         }else{
             // focus on first block
-            console.warn(props.blockRefs)
-            props.blockRefs.current[props.blocks[1].id].focus()
+            props.focusOnFirstBlock()
         }
     }
 
@@ -79,6 +78,9 @@ const TitleHeader = React.forwardRef((props, ref) => {
         return text
     }
 
+    const onFocus = () => {
+        props.setFocusedBlock({type:'title'})
+    }
 
 
 
@@ -91,8 +93,11 @@ const TitleHeader = React.forwardRef((props, ref) => {
                 ref={textInputRef}
                 onChangeText={onEdit}
                 onSubmitEditing={onEditingDone}
+                onFocus={onFocus}
                 defaultValue={props.initial}
                 selectionColor={'black'}
+                blurOnSubmit={true}
+                multiline
             />
         </View>
     );

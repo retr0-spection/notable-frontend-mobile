@@ -6,6 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Animated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
+import _ from 'lodash'
 
 
 const OptionsComponent = (props) => {
@@ -18,11 +19,43 @@ const OptionsComponent = (props) => {
         const _newNoteBlockTemplate = {
             id: generateRandomUuid(),
             type: 'CheckBoxComponent',
+            payload:null,
+            focus:true
+        }
+
+
+        const _oldPayload = props.noteBlocksRef.current[props.focusedBlock.id].getValue()
+        if (_oldPayload === undefined || _oldPayload.type === 'CheckBoxComponent'){
+            props.addComponent(_newNoteBlockTemplate)
+        }else{
+            _newNoteBlockTemplate['payload'] = {
+                    content : _oldPayload.payload.content,
+                    checked: false
+            }  
+            props.noteBlocksRef.current[props.focusedBlock.id].replaceComponent(_newNoteBlockTemplate)
+        }
+    }
+
+    const showImageOptions = () => {
+       console.warn('show image options')
+    }
+
+    const addLatex = () => {
+        const _newNoteBlockTemplate = {
+            id: generateRandomUuid(),
+            type: 'LatexComponent',
             payload: null,
             focus:true
         }
-        props.addComponent(_newNoteBlockTemplate)
+        const _oldPayload = props.noteBlocksRef.current[props.focusedBlock.id].getValue()
+        if (_oldPayload === undefined || _oldPayload.type === 'LatexComponent'){
+            props.addComponent(_newNoteBlockTemplate)
+        }else{
+            props.noteBlocksRef.current[props.focusedBlock.id].replaceComponent(_newNoteBlockTemplate)
+        }
     }
+
+   
 
     const containerStyle = useAnimatedStyle(() => {
         const height = interpolate(t.value,
@@ -88,6 +121,7 @@ const OptionsComponent = (props) => {
             <Animated.View 
             style={containerStyle}
             >
+
                 <ScrollView keyboardShouldPersistTaps={'always'} horizontal contentContainerStyle={{paddingHorizontal:'5%', alignItems:'center'}}>
                     <OptionContainer action={addToDoComponent}>
                         <MaterialCommunityIcons name='checkbox-blank-outline' size={20} />
@@ -95,8 +129,11 @@ const OptionsComponent = (props) => {
                     <OptionContainer>
                         <MaterialCommunityIcons name='format-letter-case' size={24} />
                     </OptionContainer>
-                    <OptionContainer>
+                    <OptionContainer action={showImageOptions}>
                         <EvilIcons name='image' size={28} />
+                    </OptionContainer>
+                    <OptionContainer action={addLatex}>
+                        <MaterialCommunityIcons name='less-than-or-equal' size={20} />
                     </OptionContainer>
                     <OptionContainer>
                         <Text>

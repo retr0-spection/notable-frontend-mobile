@@ -9,7 +9,9 @@ import TitleHeader from "../components/titleHeader";
 
 
 const NoteCanvas = (props) => {
-    const { noteBlocks, setNoteBlocks, noteBlocksRef, titleRef, parentMethods } = props
+    const { noteBlocks, setNoteBlocks, noteBlocksRef, titleRef, parentMethods, setFocusedBlock } = props
+
+
     const addTextComponent = () => {
         //template
         const _newNoteBlockTemplate = {
@@ -36,6 +38,12 @@ const NoteCanvas = (props) => {
 
     }
 
+    const focusOnFirstBlock = useCallback(() => {
+        if (noteBlocks.length){
+            noteBlocksRef.current[noteBlocks[0].id].focus()
+        }
+    },[noteBlocks])
+
 
     const renderItem = ({ item, drag, isActive, getIndex }) => {
         const index = getIndex()
@@ -55,8 +63,10 @@ const NoteCanvas = (props) => {
                         type={item.type}
                         autoFocus={item.focus}
                         blocks={noteBlocks}
+                        titleRef={titleRef}
                         blockRefs={noteBlocksRef}
                         parentMethods={parentMethods}
+                        setFocusedBlock={setFocusedBlock}
                     />
                 </TouchableOpacity>
             </ScaleDecorator>
@@ -65,10 +75,13 @@ const NoteCanvas = (props) => {
 
     const header = useCallback(() => {
         return <TitleHeader
-            ref={(ref) => titleRef.current = ref}
-            initial={props.title}
-            parentMethods={parentMethods}
-            blocks={noteBlocks}
+                    ref={(ref) => titleRef.current = ref}
+                    initial={props.title}
+                    parentMethods={parentMethods}
+                    blocks={noteBlocks}
+                    autoFocus={props.autoFocus && noteBlocks.length == 0}
+                    focusOnFirstBlock={focusOnFirstBlock}
+                    setFocusedBlock={setFocusedBlock}
         />
     }, [noteBlocks, noteBlocksRef])
 

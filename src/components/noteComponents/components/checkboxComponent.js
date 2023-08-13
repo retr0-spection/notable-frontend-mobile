@@ -1,13 +1,13 @@
 //import liraries
-import React, { Component, useEffect, useImperativeHandle } from 'react';
-import { View, Text, StyleSheet, TextInput } from 'react-native';
+import React, { useEffect, useImperativeHandle } from 'react';
+import { View, StyleSheet, TextInput } from 'react-native';
 import { CheckBox } from '@rneui/themed';
 import { generateRandomUuid } from '../../../utils/generators';
 
 // create a component
 const CheckBoxComponent = React.forwardRef((props, ref) => {
-    const textInputRef = React.useRef()
-    const [text, setText] = React.useState('')
+    const textInputRef = React.useRef();
+    const [text, setText] = React.useState('');
     const [checked, setChecked] = React.useState(false);
 
     useImperativeHandle(ref, () => ({
@@ -15,7 +15,7 @@ const CheckBoxComponent = React.forwardRef((props, ref) => {
         isEmpty,
         getValue,
         setPayload
-    }), [])
+    }), []);
 
 
     const focus = () => {
@@ -27,9 +27,9 @@ const CheckBoxComponent = React.forwardRef((props, ref) => {
     }
 
     const _signalEditingDone = () => {
-        if (isEmpty()){
-            props.signals.signalRemoveComponent()
-        }
+        // if (isEmpty()){
+        //     props.signals.signalRemoveComponent();
+        // }
     }
 
     const _signalEditEvent = () => {
@@ -71,22 +71,26 @@ const CheckBoxComponent = React.forwardRef((props, ref) => {
              props.blockRefs.current[props.blocks[1].id].focus()
          }
      }
+
+
+    const replaceWithParagraph = () => {
+        const _newNoteBlockTemplate = {
+            type: 'ParagraphComponent',
+            id: generateRandomUuid(),
+            payload:{
+                content :text
+            },
+            focus:true
+         }
+         props.signals.signalReplaceComponent(_newNoteBlockTemplate)
+    }
  
 
 
 
     const onEditingDone = () => {
         if (isEmpty()){
-            props.signals.signalRemoveComponent()
-            const _newNoteBlockTemplate = {
-                type: 'ParagraphComponent',
-                id: generateRandomUuid(),
-                payload:{
-                    content :''
-                },
-                focus:true
-             }
-             props.signals.signalAddComponent(_newNoteBlockTemplate)
+            replaceWithParagraph()
         }else{
             _signalAddBlock()
         }
@@ -102,6 +106,7 @@ const CheckBoxComponent = React.forwardRef((props, ref) => {
     useEffect(() => {
         if (props.autoFocus){
             textInputRef.current.focus()
+            
         }
     },[])
 
@@ -121,6 +126,22 @@ const CheckBoxComponent = React.forwardRef((props, ref) => {
     },[text, checked])
 
 
+    const handleKeyPress = (e) => {
+        const key = e.nativeEvent.key
+
+        //  focus on previous block
+        if (key === 'Backspace' && isEmpty()){
+            replaceWithParagraph()
+        }
+
+    }
+
+    const onFocus = () => {
+        props.signals.signalFocused(props.item)
+    }
+
+
+
 
 
     return (
@@ -133,7 +154,8 @@ const CheckBoxComponent = React.forwardRef((props, ref) => {
                         iconType="material-community"
                         checkedIcon="checkbox-marked"
                         uncheckedIcon="checkbox-blank-outline"
-                        checkedColor="#50C878" //emerald
+                        checkedColor="#23344D" 
+                        containerStyle={{padding:0}}
                 />
             </View>
             <TextInput
@@ -142,9 +164,13 @@ const CheckBoxComponent = React.forwardRef((props, ref) => {
                 ref={textInputRef}
                 onChangeText={onEdit}
                 onSubmitEditing={onEditingDone}
+                onFocus={onFocus}
+                blurOnSubmit={true}
+                multiline
                 defaultValue={text}
                 selectionColor={'black'}
                 onEndEditing={_signalEditingDone}
+                onKeyPress={handleKeyPress}
 
             />
         </View>
@@ -156,6 +182,10 @@ const CheckBoxComponent = React.forwardRef((props, ref) => {
 const styles = StyleSheet.create({
     text: {
         fontSize: 18,
+        width:'100%',
+        flexShrink:1,
+        flex:1,
+        paddingBottom:5
     }
 })
 

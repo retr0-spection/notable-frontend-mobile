@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { View, Text, StyleSheet } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import Feather from 'react-native-vector-icons/Feather'
 
 // create a component
 const CreateHeader = (props) => {
@@ -22,9 +23,10 @@ const CreateHeader = (props) => {
 
             {/*  note buttons/settings  */}
           <View style={{flexDirection:'row'}}>
-                {/* <TouchableOpacity onPress={props.save}>
-                    <Text style={{fontSize:18, fontWeight:'bold'}}>Save</Text>
-                </TouchableOpacity> */}
+                {/* quick options and more */}
+                <TouchableOpacity  onPress={props.options}>
+                    <Feather name="more-horizontal" size={24} color="black" style={{paddingHorizontal:'2%'}} />
+                </TouchableOpacity>
           </View>
         </View>
     );

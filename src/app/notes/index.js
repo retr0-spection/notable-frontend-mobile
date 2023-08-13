@@ -9,10 +9,9 @@ import MasonryList from 'reanimated-masonry-list';
 import { TouchableOpacity } from 'react-native';
 import { Link, useNavigation } from 'expo-router';
 import { useRouter } from 'expo-router';
-import { noteBackgroundColour, styles } from '../../../components/screenLayoutComponents/styles';
-import orm from '../../../../redux/orm/schema';
+import { noteBackgroundColour, styles } from '../../components/screenLayoutComponents/styles';
 import { useSelector } from 'react-redux';
-import { selectNotes } from '../../../../redux/slices/noteSlice';
+import { selectNotes } from '../../../redux/slices/noteSlice';
 
 // create a component
 const NotesListView = () => {
@@ -25,7 +24,6 @@ const NotesListView = () => {
     
     const getAllNotes = () => {
         let _tmp = Object.values(noteState)
-        console.warn(_tmp)
         setNotes(_tmp)
     }
 
@@ -91,8 +89,7 @@ const NotesListView = () => {
 
     const renderNotePreview = ({ item, index }) => {
         const blocks = item.blocks
-        const previewBlock = blocks.length > 1 ? blocks[1].payload : null
-        console.warn(previewBlock)
+        const previewBlock = blocks.length  ? blocks[0].payload : null
         return (
            
                 <TouchableOpacity key={`notePreview-${index}`} style={{ width: '48%', backgroundColor: noteBackgroundColour, padding: 10, paddingBottom: 40, borderRadius: 15, marginVertical: '1%', marginHorizontal: '1%' }}
