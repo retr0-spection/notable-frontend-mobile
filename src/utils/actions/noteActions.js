@@ -1,11 +1,9 @@
 import { deleteNoteEntry } from "../../../redux/slices/noteSlice"
 
 export const deleteNote = (dispatch, payload) => {
-    const data = {
-        hash: payload.hash
-    }
+  
 
-    console.warn('deleting', data.hash)
+    console.warn('deleting', payload)
     
-    dispatch(deleteNoteEntry(data))
+    dispatch(deleteNoteEntry(payload))
 }

@@ -3,6 +3,7 @@ import React, { useEffect, useImperativeHandle } from 'react';
 import { View, StyleSheet, TextInput } from 'react-native';
 import { CheckBox } from '@rneui/themed';
 import { generateRandomUuid } from '../../../utils/generators';
+import { styles } from '../../../styles';
 
 // create a component
 const CheckBoxComponent = React.forwardRef((props, ref) => {
@@ -154,13 +155,15 @@ const CheckBoxComponent = React.forwardRef((props, ref) => {
                         iconType="material-community"
                         checkedIcon="checkbox-marked"
                         uncheckedIcon="checkbox-blank-outline"
-                        checkedColor="#23344D" 
-                        containerStyle={{padding:0}}
+                        checkedColor="#ffffff" 
+                        
+                        containerStyle={[{padding:0}, styles.containerDark ]}
                 />
             </View>
             <TextInput
-                style={styles.text}
-                placeholder=''
+                style={[styles.textDark, style.text, {textDecorationLine:checked && text.length ? 'line-through' : 'none'}]}
+                placeholder='checkbox item'
+                placeholderTextColor={'gray'}
                 ref={textInputRef}
                 onChangeText={onEdit}
                 onSubmitEditing={onEditingDone}
@@ -168,7 +171,7 @@ const CheckBoxComponent = React.forwardRef((props, ref) => {
                 blurOnSubmit={true}
                 multiline
                 defaultValue={text}
-                selectionColor={'black'}
+                selectionColor={'white'}
                 onEndEditing={_signalEditingDone}
                 onKeyPress={handleKeyPress}
 
@@ -179,7 +182,7 @@ const CheckBoxComponent = React.forwardRef((props, ref) => {
 
 
 
-const styles = StyleSheet.create({
+const style = StyleSheet.create({
     text: {
         fontSize: 18,
         width:'100%',

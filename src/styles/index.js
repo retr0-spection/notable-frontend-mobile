@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
     progressCircle : {
         bg : {
             light : '#fff',
-            dark : '#1e1e1e'
+            dark : '#2f2f2f'
         },
         text : {
             light : "rgb(188, 201, 255)",

@@ -2,13 +2,13 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TextInput, Image, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import LoginIllustration from '../../../assets/illustrations/login.png'
-import { useAuth } from '../../context/auth';
 import { useDispatch } from 'react-redux';
-import { login, selectLoggedIn, setLoggedIn, setProfile } from '../../../redux/slices/userSlice';
+import { setLoggedIn, setProfile } from '../../../redux/slices/userSlice';
 import { router } from 'expo-router';
 import axios from 'axios';
-
+import { AUTHAPI } from '../../api';
+import { styles } from '../../styles';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 // create a component
 const LoginComponent = () => {
     const dispatch = useDispatch()
@@ -56,11 +56,11 @@ const LoginComponent = () => {
 
         if (formCheck()) {
             const data = {
-                email,
+                username:email,
                 password
             }
 
-            axios.post('http://localhost:3000/api/v1/auth/log-in/', data).then((response) => {
+            axios.post(AUTHAPI.AUTH.LOGIN, data).then((response) => {
                 dispatch(setProfile(response.data))
                 dispatch(setLoggedIn(true))
                 router.replace('/home')
@@ -75,33 +75,38 @@ const LoginComponent = () => {
     }
 
     return (
-        <SafeAreaView style={{ height: '100%', width: '100%' }}>
+        <SafeAreaView style={{ height: '100%', width: '100%', ...styles.containerDark }}>
             <View>
                 <View>
-                    <Image source={LoginIllustration} style={{ height: '35%', width: '100%' }} resizeMode='cover' />
+                    <View>
+                        <TouchableOpacity style={{paddingHorizontal:'3%', paddingVertical:'1%'}} onPress={router.back}>
+                            <MaterialIcons name="arrow-back-ios" color={'white'} size={25} />
+                        </TouchableOpacity>
+                    </View>
+                    {/* <Image source={LoginIllustration} style={{ height: '35%', width: '100%' }} resizeMode='cover' /> */}
                     <View style={{ paddingHorizontal: '5%', paddingVertical: '2%' }}>
-                        <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#13437B' }}>Welcome Back</Text>
+                        <Text style={{ fontSize: 24, fontWeight: 'bold', color: 'white' }}>Welcome Back</Text>
                     </View>
                     
                     {/* error meesage */}
                     {error ? <View style={{backgroundColor:'#FAE0E0', paddingVertical:'2%', width:'90%', paddingHorizontal:'3%', alignSelf:'center', borderRadius:8, marginVertical:'1%'}}>
                         <Text style={{color:'#EB475C'}}>{errorMessage}</Text>
                     </View> : <View style={{ paddingHorizontal: '5%' }}>
-                        <Text>Log back in to continue</Text>
+                        <Text style={{color:'silver'}}>Log back in to continue</Text>
                     </View>}
                     {/* forms */}
                     <View style={{ paddingHorizontal: '3%' }}>
                         {/* email */}
                         <View style={{ paddingVertical: '3%' }}>
-                            <TextInput value={email} placeholder='Email' autoCapitalize='none' style={{ paddingHorizontal: '3%', fontSize: 18, backgroundColor: '#cccccc', paddingVertical: '3%', borderRadius: 10 }} onChangeText={(text) => setEmail(text.trim())} autoComplete={'email'} autoCorrect={false} />
+                            <TextInput value={email} selectionColor={'white'} placeholder='Email' placeholderTextColor={'gray'} autoCapitalize='none' style={{ paddingHorizontal: '3%', fontSize: 18, backgroundColor: '#2e2e2e', paddingVertical: '3%', borderRadius: 10, color:'white'  }} onChangeText={(text) => setEmail(text.trim())} autoComplete={'email'} autoCorrect={false} />
                         </View>
                         <View style={{ paddingVertical: '3%' }}>
-                            <TextInput value={password} placeholder='Password' secureTextEntry style={{ paddingHorizontal: '3%', fontSize: 18, backgroundColor: '#cccccc', paddingVertical: '3%', borderRadius: 10 }} onChangeText={setPassword} />
+                            <TextInput value={password} selectionColor={'white'} placeholder='Password' placeholderTextColor={'gray'} secureTextEntry style={{ paddingHorizontal: '3%', fontSize: 18, backgroundColor: '#2e2e2e', paddingVertical: '3%', borderRadius: 10, color:'white' }} onChangeText={setPassword} />
                         </View>
                     </View>
                     <View>
-                        <TouchableOpacity style={{ width: '90%', alignSelf: 'center', paddingVertical: '4%', backgroundColor: '#13437B', borderRadius: 10, marginVertical: '3%' }} onPress={signIn}>
-                            <Text style={{ textAlign: 'center', color: 'white' }}>Log In</Text>
+                        <TouchableOpacity style={{ width: '90%', alignSelf: 'center', paddingVertical: '4%', backgroundColor: '#ffefcd', borderRadius: 10, marginVertical: '3%' }} onPress={signIn}>
+                            <Text style={{ textAlign: 'center', color: 'black', fontWeight:'bold' }}>Log In</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -113,15 +118,6 @@ const LoginComponent = () => {
     );
 };
 
-// define your styles
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#2c3e50',
-    },
-});
 
 //make this component available to the app
 export default LoginComponent;

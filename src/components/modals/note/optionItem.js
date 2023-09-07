@@ -13,7 +13,7 @@ const OptionItem = (props) => {
 
 
     return (
-        <TouchableOpacity style={{paddingHorizontal:'3%', backgroundColor:'#dedede', paddingVertical:'5%', borderRadius:10, flexDirection:'row', width:'100%', alignItems:'center'}} activeOpacity={0.7} onPress={doAction}>
+        <TouchableOpacity style={{paddingHorizontal:'3%', backgroundColor:'gray', paddingVertical:'5%', borderRadius:10, flexDirection:'row', width:'100%', alignItems:'center'}} activeOpacity={0.7} onPress={doAction}>
             <View style={{width:'10%', marginRight:'5%'}}>
                 {props.icon}
             </View>

@@ -17,7 +17,7 @@ const CreateHeader = (props) => {
                     router.back();
                 }}
             >
-                <MaterialIcons name="arrow-back-ios" size={25} />
+                <MaterialIcons name="arrow-back-ios" color={'white'} size={25} />
             </TouchableOpacity>
 
 
@@ -25,7 +25,7 @@ const CreateHeader = (props) => {
           <View style={{flexDirection:'row'}}>
                 {/* quick options and more */}
                 <TouchableOpacity  onPress={props.options}>
-                    <Feather name="more-horizontal" size={24} color="black" style={{paddingHorizontal:'2%'}} />
+                    <Feather name="more-horizontal" size={24} color="white" style={{paddingHorizontal:'2%'}} />
                 </TouchableOpacity>
           </View>
         </View>

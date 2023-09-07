@@ -25,6 +25,13 @@ const NoteTextInput = React.forwardRef((props, ref) => {
 
     const _signalEditingDone = () => {
         if (isEmpty()){
+            // if preceding component exists
+            // do preprocessing
+      
+            
+
+
+    
             props.signals.signalRemoveComponent()
         }
     }
@@ -99,13 +106,14 @@ const NoteTextInput = React.forwardRef((props, ref) => {
         <View style={{ paddingHorizontal: '3%' }} >
             <TextInput
                 style={styles.text}
-                placeholder=''
+                placeholder='Text Block'
+                placeholderTextColor='gray'
                 ref={textInputRef}
                 onChangeText={onEdit}
                 onFocus={onFocus}
                 multiline
                 defaultValue={text}
-                selectionColor={'black'}
+                selectionColor={'white'}
                 onEndEditing={_signalEditingDone}
                 onKeyPress={handleKeyPress}
 
@@ -119,6 +127,7 @@ const NoteTextInput = React.forwardRef((props, ref) => {
 const styles = StyleSheet.create({
     text: {
         fontSize: 18,
+        color:'white',
     }
 })
 

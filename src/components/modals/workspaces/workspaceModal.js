@@ -6,12 +6,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectSelectedWorkspace, selectWorkspaces, setSelectedWorkspace } from '../../../../redux/slices/dataSlice';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { router, useNavigation } from 'expo-router';
 // create a component
 const WorkSpaceModal = React.forwardRef((props, ref) => {
     const actionSheetRef = React.useRef()
     const workspaces = useSelector(selectWorkspaces)
     const selectedWorkspace = useSelector(selectSelectedWorkspace)
     const dispatch = useDispatch()
+    const navigation = useNavigation()
 
     useImperativeHandle(ref, () => ({
         show,
@@ -28,16 +30,25 @@ const WorkSpaceModal = React.forwardRef((props, ref) => {
         actionSheetRef.current.hide()
     }
 
+    const goToCreate = () => {
+        hide()
+        router.push('workspaces/create')
+    }
+
 
     const renderWorkspaces = ({item}) => {
+        const selected = selectedWorkspace?.hash == item.hash 
         const onPress = () => {
-            dispatch(setSelectedWorkspace(item))
+            if (!selected){
+                dispatch(setSelectedWorkspace(item))
+            }
+            actionSheetRef.current.hide()
         }
 
         return <TouchableOpacity style={{backgroundColor:'#2e2e2e', marginHorizontal:'5%', marginVertical:'3%', paddingVertical:'4%', paddingHorizontal:'3%', borderRadius:10}} activeOpacity={0.7} onPress={onPress}>
             <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
                 <Text style={{color:'white', fontWeight:'bold'}}>{item.name}</Text>
-                {selectedWorkspace?.id == item.id ? <MaterialIcons name='check' color='white' size={18} /> : null}
+                {selected ? <MaterialIcons name='check' color='white' size={18} /> : null}
             </View>
         </TouchableOpacity>
     }
@@ -46,7 +57,7 @@ const WorkSpaceModal = React.forwardRef((props, ref) => {
        <ActionSheet ref={actionSheetRef} containerStyle={{height:'80%', backgroundColor:'#1e1e1e'}}>
             <View style={{paddingHorizontal:'5%', paddingVertical:'3%', flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
                 <Text style={{fontSize:20, color:'white', fontWeight:'bold'}}>Workspaces</Text>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={goToCreate}>
                     <MaterialIcons name="add-circle" size={24}  color={'white'}/>
                 </TouchableOpacity>
             </View>

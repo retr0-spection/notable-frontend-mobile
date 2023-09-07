@@ -132,13 +132,15 @@ const LatexComponent = React.forwardRef((props, ref) => {
                 <Pressable onPress={() => setEdit(true)}>
                     <MathView math={text}
                             config={{inline:true}}
+                            color='white'
                             renderError={({ error }) => <Text style={[{ marginVertical: 10, fontWeight: 'bold', backgroundColor: 'red' }]}>{error.name} {error.message}</Text>}
                     /> 
                 </Pressable>
             : 
             <TextInput 
                 style={styles.text}
-                placeholder='Write your latex here.'
+                placeholder='latex block'
+                placeholderTextColor={'gray'}
                 ref={textInputRef}
                 onChangeText={onEdit}
                 onSubmitEditing={onEditingDone}
@@ -146,7 +148,7 @@ const LatexComponent = React.forwardRef((props, ref) => {
                 onFocus={onFocus}
                 defaultValue={text}
                 onKeyPress={handleKeyPress}
-                selectionColor={'black'}
+                selectionColor={'white'}
                 blurOnSubmit={true}
                 autoCapitalize='none'
                 autoCorrect={false}
@@ -163,8 +165,9 @@ const styles = StyleSheet.create({
         width:'100%',
         flexShrink:1,
         paddingBottom:5,
-        backgroundColor:'#cecece',
-        padding:'2%'
+        backgroundColor:'#202020',
+        padding:'2%',
+        color:'white'
 }})
 
 export default LatexComponent

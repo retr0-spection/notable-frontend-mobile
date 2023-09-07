@@ -4,10 +4,14 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native
 import TeamExtractComponent from '../../../components/project/team/teamExtract';
 import * as Progress from 'react-native-progress';
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { router } from 'expo-router';
+import { router, useNavigation } from 'expo-router';
+import { useDispatch } from 'react-redux';
+import { setSelectedTask } from '../../../../redux/slices/dataSlice';
 // create a component
 const ProjectExtract = (props) => {
-    const item = props.item
+    const data = props.item
+    const dispatch = useDispatch()
+    const navigation = useNavigation()
 
     const colors = {
         muted : 'rgb(107, 70, 93)',
@@ -17,29 +21,29 @@ const ProjectExtract = (props) => {
     const blocks = Array(3).fill(0)
 
 
-    const renderExtract = () => {
-
+    const renderExtract = ({item}) => {
         return (
         <View style={{flexDirection:'row', paddingVertical:'3%', alignItems:'center'}} >
             <View style={{width:'10%', paddingHorizontal:'3%'}}>
                 <Ionicons name="checkmark" color={'white'} size={20} />
             </View>
             <View>
-                <Text style={{fontSize:18, color:'white'}}>Lock the shooting script</Text>
+                <Text style={{fontSize:18, color:'white'}}>{item.payload.content}</Text>
             </View>
         </View>)
     }
 
 
     const openTask = () => {
-        router.push('/canvas')
+        dispatch(setSelectedTask(data))
+        navigation.navigate('notes', {id: data.hash})
     }
 
     return (
         <TouchableOpacity style={{backgroundColor:colors.muted,paddingVertical:'2%',marginVertical:'3%',paddingHorizontal:'2%', borderRadius:12}} activeOpacity={0.7} onPress={openTask}>
             <View style={{flexDirection:'row'}}>
                 <View style={{width:'55%',backgroundColor:colors.normal,paddingHorizontal:'5%', paddingVertical:'3%', borderRadius:12}} >
-                    <Text style={{color:'white', fontWeight:'bold'}}>Pre-production</Text>
+                    <Text style={{color:'white', fontWeight:'bold'}}>{data.title}</Text>
                     <View>
                         <Text style={{color:'white'}}>April 2- 18</Text>
                     </View>
@@ -53,7 +57,7 @@ const ProjectExtract = (props) => {
             </View>
             {/* details (expanded) */}
             <View>
-                <FlatList data={blocks} renderItem={renderExtract}  />
+                <FlatList data={data.blocks} renderItem={renderExtract}  />
 
 
             </View>

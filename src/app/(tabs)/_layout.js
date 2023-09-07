@@ -36,14 +36,7 @@ const TabLayout = () => {
                     <MaterialCommunityIcons name='format-list-text' color={color} size={size} />
                 ),
                 tabBarLabelStyle:{display:'none'} }} />
-                <Tabs.Screen name="discussions" options={{
-                    headerShown: false,
-                    tabBarIcon: ({ color, size }) => (
-                        
-                        <Ionicons name='chatbubbles' color={color} size={size} />
-                    ),
-                    tabBarLabelStyle:{display:'none'}
-                }} />
+             
                 <Tabs.Screen 
                     name="profile" 
                     options={{
@@ -51,13 +44,11 @@ const TabLayout = () => {
                     headerShown: false,
                     tabBarLabelStyle: { display: 'none' },
                     tabBarIcon: ({ color, size }) => (
-                        <TouchableOpacity style={{borderRadius:size/2, borderWidth:1, borderColor:color}}>
                             <FastImage
                                 source={require('../../../assets/mock/profilePictures/jessica.jpg')}
-                                style={{ height: size, width: size, borderRadius: size/2 }}
+                                style={{ height: size, width: size, borderRadius: size/2,borderRadius:size/2, borderWidth:1, borderColor:color }}
                                 resizeMode="cover"
                             />
-                        </TouchableOpacity>
                     ),
                 }} />
             </Tabs>

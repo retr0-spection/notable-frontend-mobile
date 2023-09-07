@@ -90,12 +90,13 @@ const TitleHeader = React.forwardRef((props, ref) => {
             <TextInput 
                 style={styles.text}
                 placeholder='Untitled'
+                placeholderTextColor={'gray'}
                 ref={textInputRef}
                 onChangeText={onEdit}
                 onSubmitEditing={onEditingDone}
                 onFocus={onFocus}
                 defaultValue={props.initial}
-                selectionColor={'black'}
+                selectionColor={'white'}
                 blurOnSubmit={true}
                 multiline
             />
@@ -107,6 +108,7 @@ const styles = StyleSheet.create({
     text : {
         fontSize:26,
         fontWeight:'bold',
+        color:'white'
     }
 })
 

@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FastImage from 'react-native-fast-image';
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
@@ -8,6 +8,7 @@ import { ScrollView } from 'react-native';
 import { FlatList } from 'react-native';
 import { getDateAsString, getMonthAsString, getShortMonthAsString, getTimeAsString, getTimeOfDay } from '../../../utils/dateHelpers';
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import {  router, useNavigation } from 'expo-router';
 import ProgressCircle from 'react-native-progress-circle'
 import { styles } from '../../../styles';
@@ -16,8 +17,11 @@ import TeamExtractComponent from '../../../components/project/team/teamExtract';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectProfile } from '../../../../redux/slices/userSlice';
-import { getWorkspaces, selectSelectedWorkspace, setProjects, setSelectedProject } from '../../../../redux/slices/dataSlice';
+import { getWorkspaces, selectSelectedWorkspace, setnotes, setSelectedProject } from '../../../../redux/slices/dataSlice';
 import WorkSpaceModal from '../../../components/modals/workspaces/workspaceModal';
+import { PROJECTAPI } from '../../../api';
+import {  getNotesByColumn, selectNotes } from '../../../../redux/slices/noteSlice';
+import { first } from 'lodash';
 
 
 
@@ -28,59 +32,48 @@ const Home = (props) => {
     const dispatch = useDispatch()
     const workspace_ref = useRef()
     const selectedWorkspace = useSelector(selectSelectedWorkspace)
-
+    const [refreshing, setRefreshing] = React.useState(false)
     const shadowStyle = {
         shadowColor: '#000',
         shadowOffset: { height: 8, width: 0 },
         shadowOpacity: 0.1,
         shadowRadius: 10
     }
-    const date = new Date()
-    const [projects, setProjectsList] = React.useState([])
-    const data = [{
-        date: new Date(2023, 6),
-        item: [
-            {
-                date: new Date(2023, 6, 5),
-                items: [
-                    {
-                        title: 'Meeting Hannah',
-                        author: 'Jeff',
-                        date: new Date(2023, 6, 5, 11, 0),
-                    },
-                    {
-                        title: 'Board Meeting',
-                        author: 'Jeff',
-                        date: new Date(2023, 6, 5, 13, 0),
-                    },
-                    {
-                        title: 'Finish Boarding Session',
-                        author: 'Jeff',
-                        date: new Date(2023, 6, 5, 15, 15),
-                    },
-                ]
-            },
-
-        ]
-    }]
-
+    const notesList = useSelector((state) => getNotesByColumn(state, {workspaceID:selectedWorkspace.hash}))
 
     const loadWorkSpaces = () => {
         dispatch(getWorkspaces())
     }
 
     useEffect(() => {
-        loadScreen()
+        const listener = navigation.addListener('focus', loadScreen)
+
+
+        return listener
+    },[selectedWorkspace])
+
+    useEffect(() => {
+       loadScreen()
     },[selectedWorkspace])
 
 
     const loadScreen = () => {
         loadWorkSpaces()
-        getProjects()
+        getNotes()
+    }
+
+    const onRefresh = () => {
+        setRefreshing(true)
+        loadScreen()
+
+        setTimeout(() => {
+            setRefreshing(false)
+        },2000)
+
     }
 
 
-    const getProjects = () => {
+    const getNotes = () => {
         if (selectedWorkspace){
             const config = {
                 headers : {
@@ -92,13 +85,10 @@ const Home = (props) => {
                 workspace_id : selectedWorkspace.id
             }
 
-            console.warn(selectedWorkspace)
     
-            axios.post('http://localhost:3000/api/v1/project/list/', data, config).then((res) => {
-                console.warn(res.data)
-                setProjectsList(res.data)
-                dispatch(setProjects(res.data));
-            })
+            // axios.post(.LIST, data, config).then((res) => {
+            //     dispatch(setnotes(res.data));
+            // })
         }
     }
 
@@ -116,48 +106,30 @@ const Home = (props) => {
     }
 
 
-    const renderProject = ({ item, index }) => {
+    const renderNotePreview = ({ item, index }) => {
+        const firstBlock = item.blocks
+        const preview = firstBlock ? firstBlock[0]?.payload.content : null
 
 
         return (
             <TouchableOpacity 
-                style={[ styles.subContainerDark ,{  width: '48%', paddingHorizontal: '3%', marginHorizontal: '1%', borderRadius: 20, paddingVertical: '3%',marginBottom:'5%', ...shadowStyle }]} activeOpacity={0.7}
+                style={[ styles.subContainerDark ,{  width: '100%', paddingHorizontal: '3%', borderRadius: 10, paddingVertical: '3%',marginBottom:'5%', ...shadowStyle }]} activeOpacity={0.7}
                 onPress={() => {
-                    dispatch(setSelectedProject(item))
-                    navigation.navigate({name:'projects', params:{'project':item.id}})
+                    console.warn(item.hash)
+                    router.push(`notes/${item.hash}`)
                 }}
-                
                 >
-                <View style={{ 'flexDirection': 'row' }}>
                     {/* title */}
-                    <View style={{ width: '50%' }}>
-                        <Text style={[styles.textDark,{ fontWeight: 'bold' }]} numberOfLines={2}>{item.title}</Text>
+                    <View>
+                        <Text style={{color:'white', fontWeight:'bold', fontSize:18}}>{item.title}</Text>
                     </View>
-                    {/* progress summary */}
-                    <View style={{ width: '50%' }}>
-                        <ProgressCircle
-                            percent={item.progress*100}
-                            radius={30}
-                            borderWidth={5}
-                            color={item.progressColor}
-                            shadowColor="rgb(238,240,241)"
-                            bgColor={styles.progressCircle.bg.dark}
-                        >
-                            <Text style={{ fontSize: 16, fontWeight:'bold', color:styles.progressCircle.text.dark}}>{`${Math.floor(item.progress*100)}%`}</Text>
-                        </ProgressCircle>
-                    </View>
-                </View>
 
-                {/* status */}
-                {/* <View>
-                    <StatusComponent type={item.status} />
-                </View> */}
-
-
-                {/* team */}
-                    <View style={{flexDirection:'row', alignItems:'center'}}>
-                        <TeamExtractComponent team={item.assignees} />
-                     </View>
+                    {/* preview */}
+                    {firstBlock ? 
+                    <View>
+                        <Text style={{color:'white'}} numberOfLines={2}>{preview}</Text>
+                    </View> : null}
+             
             </TouchableOpacity>
         )
     }
@@ -221,7 +193,7 @@ const Home = (props) => {
                     }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
                             <View>
-                                <Text style={[styles.textDark, { fontSize: 16, fontWeight: 'bold' }]}>[Notable.]</Text>
+                                <Text style={[styles.textDark, { fontSize: 16, fontWeight: 'bold' }]}>[notable.]</Text>
                             </View>
                             <TouchableOpacity activeOpacity={0.7} style={{backgroundColor:'#2f2f2f', paddingHorizontal:'5%',paddingVertical:'3%', borderRadius:30}} onPress={() => {
                                 if (selectedWorkspace){
@@ -241,28 +213,28 @@ const Home = (props) => {
                     {/* contents */}
 
                     <FlatList
+                        refreshControl={<RefreshControl  tintColor={'white'} refreshing={refreshing} onRefresh={onRefresh}  />}
                         ListHeaderComponent={
                             <View>
-                                <View>
-                                    {renderItem({ item: data[0], index: 0 })}
-                                </View>
                                 <View style={[styles.searchDark, { paddingVertical:'3%', paddingHorizontal:'3%', flexDirection:'row', alignItems:'center', borderRadius:20, marginTop:'2%', marginBottom:'4%'}]}>
                                     <View style={{marginRight:'3%'}}>
                                         <AntDesign name='search1' size={20} color={'rgb(136, 146, 153)'} />
                                     </View>
-                                    <TextInput selectionColor={'black'} placeholder='Search for projects, labels, people' placeholderTextColor={'rgb(136, 146, 153)'} />
+                                    <TextInput selectionColor={'white'} style={{color:'white'}} placeholder='Search for notes, labels, people' placeholderTextColor={'rgb(136, 146, 153)'} />
                                 </View>
                                 <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '2%' }}>
-                                    <Text style={[styles.textDark,{ fontSize: 20, fontWeight: 'bold' }]}>Projects</Text>
+                                    <Text style={[styles.textDark,{ fontSize: 20, fontWeight: 'bold' }]}>Notes</Text>
+                                    <TouchableOpacity onPress={() => navigation.navigate('notes', {id:null})}>
+                                        <MaterialIcons name="add-circle" size={24}  color={'white'}/>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
                         }
 
                         contentContainerStyle={{ paddingTop: '0%', paddingHorizontal: '3%' }}
                         style={{ height: '100%' }}
-                        data={projects}
-                        numColumns={2}
-                        renderItem={renderProject}
+                        data={notesList}
+                        renderItem={renderNotePreview}
 
                     />
                 </View>

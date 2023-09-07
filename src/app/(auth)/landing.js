@@ -5,24 +5,25 @@ import LandingImage from '../../../assets/illustrations/landing.png'
 import GoogleSso from '../../../assets/google-sso.png'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { Link } from 'expo-router';
+import { styles } from '../../styles';
 
 // create a component
 const LandingComponent = () => {
 
     return (
-        <View style={{height:'100%', width:'100%'}}>
+        <View style={{height:'100%', width:'100%',...styles.containerDark}}>
             <View style={{height:'50%', paddingTop:'10%'}}>
                 <Image source={LandingImage} style={{height:'100%', width:'100%'}} resizeMode='contain' />
             </View>
             <View style={{paddingHorizontal:'5%'}}>
                 {/* call to action */}
                 <View>
-                    <Text style={{color:'#13437B', fontSize:30, fontWeight:'bold'}}>The app that helps you get things done</Text>
+                    <Text style={{color:'silver', fontSize:30, fontWeight:'bold'}}>The app that helps you get things done</Text>
                 </View>
                 {/* sign in */}
                 <Link href='/login' asChild>
-                <TouchableOpacity activeOpacity={0.7} style={{width:'90%', alignSelf:'center', paddingVertical:'4%', backgroundColor:'#13437B', borderRadius:20, marginVertical:'5%'}}>
-                    <Text style={{textAlign:'center', color:'white', fontWeight:'bold', fontSize:16}}>Sign In</Text>
+                <TouchableOpacity activeOpacity={0.7} style={{width:'90%', alignSelf:'center', paddingVertical:'4%', backgroundColor:'#ffefcd', borderRadius:20, marginVertical:'5%'}}>
+                    <Text style={{textAlign:'center', color:'black', fontWeight:'bold', fontSize:16}}>Sign In</Text>
                 </TouchableOpacity>
                 </Link>
                 {/* or */}
@@ -50,7 +51,7 @@ const LandingComponent = () => {
                 <View style={{width:'100%', paddingVertical:'5%', alignItems:'center'}}>
                     <Link href='/signup' asChild>
                     <TouchableOpacity activeOpacity={0.7}>
-                    <Text style={{textAlignVertical:'center'}}>Don't have an account? <Text style={{textAlignVertical:'center', fontWeight:'bold', color:'#13437B'}}>Register</Text></Text>
+                    <Text style={{textAlignVertical:'center', color:'gray'}}>Don't have an account? <Text style={{textAlignVertical:'center', fontWeight:'bold', color:'white'}}>Register</Text></Text>
                         </TouchableOpacity> 
                     </Link>
                 </View>
@@ -62,14 +63,6 @@ const LandingComponent = () => {
 };
 
 // define your styles
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#2c3e50',
-    },
-});
 
 //make this component available to the app
 export default LandingComponent;

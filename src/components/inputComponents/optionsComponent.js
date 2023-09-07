@@ -55,6 +55,48 @@ const OptionsComponent = (props) => {
         }
     }
 
+    const addBullet = () => {
+        const _newNoteBlockTemplate = {
+            id: generateRandomUuid(),
+            type: 'BulletComponent',
+            payload:null,
+            focus:true
+        }
+
+
+        const _oldPayload = props.noteBlocksRef.current[props.focusedBlock.id].getValue()
+        if (_oldPayload === undefined || _oldPayload.type === 'BulletComponent'){
+            props.addComponent(_newNoteBlockTemplate)
+        }else{
+            _newNoteBlockTemplate['payload'] = {
+                    content : _oldPayload.payload.content,
+            }  
+            props.noteBlocksRef.current[props.focusedBlock.id].replaceComponent(_newNoteBlockTemplate)
+        }
+    }
+
+    const addNumbered = () => {
+        const _newNoteBlockTemplate = {
+            id: generateRandomUuid(),
+            type: 'NumberedComponent',
+            payload:null,
+            focus:true
+        }
+
+
+        const _oldPayload = props.noteBlocksRef.current[props.focusedBlock.id].getValue()
+        if (_oldPayload === undefined || _oldPayload.type === 'NumberedComponent'){
+            _newNoteBlockTemplate.payload.number = _oldPayload.payload.number + 1
+            props.addComponent(_newNoteBlockTemplate)
+        }else{
+            _newNoteBlockTemplate['payload'] = {
+                    content : _oldPayload.payload.content,
+                    number : 1
+            }  
+            props.noteBlocksRef.current[props.focusedBlock.id].replaceComponent(_newNoteBlockTemplate)
+        }
+    }
+
    
 
     const containerStyle = useAnimatedStyle(() => {
@@ -124,20 +166,25 @@ const OptionsComponent = (props) => {
 
                 <ScrollView keyboardShouldPersistTaps={'always'} horizontal contentContainerStyle={{paddingHorizontal:'5%', alignItems:'center'}}>
                     <OptionContainer action={addToDoComponent}>
-                        <MaterialCommunityIcons name='checkbox-blank-outline' size={20} />
+                        <MaterialCommunityIcons name='checkbox-blank-outline' color={'white'}  size={20} />
                     </OptionContainer>
                     <OptionContainer>
-                        <MaterialCommunityIcons name='format-letter-case' size={24} />
+                        <MaterialCommunityIcons name='format-letter-case' color={'white'}  size={24} />
                     </OptionContainer>
                     <OptionContainer action={showImageOptions}>
-                        <EvilIcons name='image' size={28} />
+                        <EvilIcons name='image' color={'white'}  size={28} />
                     </OptionContainer>
                     <OptionContainer action={addLatex}>
-                        <MaterialCommunityIcons name='less-than-or-equal' size={20} />
+                        <MaterialCommunityIcons name='less-than-or-equal' color={'white'} size={20} />
                     </OptionContainer>
-                    <OptionContainer>
-                        <Text>
-                            Other options
+                    <OptionContainer action={addBullet}>
+                        <Text style={{color:'white'}}>
+                            B
+                        </Text>
+                    </OptionContainer>
+                    <OptionContainer action={addNumbered}>
+                        <Text style={{color:'white'}}>
+                            Num
                         </Text>
                     </OptionContainer>
                 </ScrollView>

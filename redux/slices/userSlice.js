@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios';
+import { AUTHAPI } from '../../src/api';
 
 
 // normalize data, DO NOT NEST (try to keep it 1 level deep to object/s)
@@ -34,7 +35,7 @@ export const userSlice = createSlice({
 export const login = createAsyncThunk('user/login', async (dispatch, getState) => {
   const payload = dispatch
 
-  return axios.post('http://localhost:3000/api/v1/auth/log-in/', payload)
+  return axios.post(AUTHAPI.AUTH.LOGIN, payload)
 })
 
 
@@ -48,7 +49,7 @@ export const refreshProfile = createAsyncThunk('user/profile/refresh', async (di
       }
     }
   
-    return axios.get('http://localhost:3000/api/v1/auth/profile/get/', config)
+    return axios.get(AUTHAPI.PROFILE.GET, config)
 
   }
 })
