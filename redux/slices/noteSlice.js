@@ -13,7 +13,7 @@ import axios from 'axios';
 //{id(has), fk(note_id), ...content}
 
 // normalize data, DO NOT NEST (try to keep it 1 level deep to object/s)
-const initialState = {
+export const initialState = {
     notes:{
 
     }
@@ -57,9 +57,20 @@ export const noteSlice = createSlice({
 
             }
 
-        },
-     
+        }
+       
     
+    },
+    extraReducers:(builder) => {
+        builder.addCase(uploadAllNotes.fulfilled, (state, action) => {
+            const notes = action.payload.data 
+            const payload = {}
+            notes.map((note) => {
+                payload[note.hash] = note
+            })
+            console.warn(payload)
+            state.notes = payload
+        })
     }
 })
 
@@ -96,10 +107,36 @@ export const uploadNote = createAsyncThunk('notes/upload', async(payload, thunkA
 })
 
 
-export const deleteNote = (payload, otherConfig) => {
-    const profile = otherConfig.profile
-  
+export const deleteNote = createAsyncThunk('note/delete', async(payload, thunkAPI) => {
 
+    // delete locally
+
+    thunkAPI.dispatch(deleteNoteEntry(payload))
+
+
+    // delete on server
+    
+    const profile = thunkAPI.getState().user.profile
+    const config = {
+        headers : {
+            Authorization: 'Bearer ' + profile.token
+        }
+    }
+
+    const data = {
+        hash: payload.hash,
+    }  
+
+    axios.post(NOTEAPI.DELETE, data, config).then((res) => {
+        console.warn(res.data)
+    })
+
+})
+
+
+export const uploadAllNotes = createAsyncThunk('allNotes/upload', async(payload, thunkAPI) => {
+    const profile = thunkAPI.getState().user.profile
+    notes = Object.values(thunkAPI.getState().notes.notes)
 
     const config = {
         headers : {
@@ -108,44 +145,46 @@ export const deleteNote = (payload, otherConfig) => {
     }
 
     const data = {
-        task_hash: payload.hash,
-    }  
+        notes,
+    }
+
+    return axios.post(NOTEAPI.SYNC, data, config)
+    
 
 
-    axios.post(NOTEAPI.DELETE, data, config).then((res) => {
-        console.warn(res.data)
-    })
-
-}
-
+})
 
 export const { addNoteEntry, deleteNoteEntry } = noteSlice.actions
 export const selectNotes = (state) => state.notes
 
 // filter
 export const getNotesByColumn = (state, payload) => {
-    const _notes = Object.values(state.notes.notes)
+    const _notes = Object.values(state.notes?.notes)
     let queries = []
-
-    Object.entries(payload).map(([k, v]) => {
-        const query = {}
-        query.key = k
-        query.value = v
-
-        queries.push(query)
-    })
-
-    const notes = _notes.filter((v) => {
-        const query = queries[0]
-        try {
-            if (v[query.key] === query.value){
-                return v
-            }
-        }catch(err) {
-            console.warn(err)
-        }
-    })
+    var notes = []
+    if (_notes.length){
+        Object.entries(payload).map(([k, v]) => {
+            const query = {}
+            query.key = k
+            query.value = v
     
+            queries.push(query)
+        })
+
+    
+        notes = _notes.filter((v) => {
+            const query = queries[0]
+            try {
+                if (v[query.key] === query.value){
+                    return v
+                }
+            }catch(err) {
+                console.warn(err)
+            }
+        })
+    }
+
+    console.warn(notes)
 
     return notes
 }

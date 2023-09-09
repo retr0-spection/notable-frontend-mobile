@@ -5,6 +5,8 @@ import { CheckBox } from '@rneui/themed';
 import { generateRandomUuid } from '../../../utils/generators';
 import { styles } from '../../../styles';
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import CustomText from '../../../styles/customNativeComponents/text';
+import CustomTextInput from '../../../styles/customNativeComponents/textinput';
 // create a component
 const NumberedComponent = React.forwardRef((props, ref) => {
     const textInputRef = React.useRef();
@@ -145,10 +147,10 @@ const NumberedComponent = React.forwardRef((props, ref) => {
     return (
         <View style={{flexDirection:'row', alignItems:'center' }}>
             <View>
-               <Text style={{color:'white'}}>{number}. </Text>
+               <CustomText>{number}. </CustomText>
             </View>
-            <TextInput
-                style={[styles.textDark, style.text]}
+            <CustomTextInput
+                style={style.text}
                 placeholder='bullet item'
                 placeholderTextColor={'gray'}
                 ref={textInputRef}

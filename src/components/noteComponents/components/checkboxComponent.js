@@ -4,12 +4,16 @@ import { View, StyleSheet, TextInput } from 'react-native';
 import { CheckBox } from '@rneui/themed';
 import { generateRandomUuid } from '../../../utils/generators';
 import { styles } from '../../../styles';
+import CustomTextInput from '../../../styles/customNativeComponents/textinput';
+import { useSelector } from 'react-redux';
+import { selectLightMode } from '../../../../redux/slices/dataSlice';
 
 // create a component
 const CheckBoxComponent = React.forwardRef((props, ref) => {
     const textInputRef = React.useRef();
     const [text, setText] = React.useState('');
     const [checked, setChecked] = React.useState(false);
+    const lightMode = useSelector(selectLightMode)
 
     useImperativeHandle(ref, () => ({
         focus,
@@ -155,13 +159,13 @@ const CheckBoxComponent = React.forwardRef((props, ref) => {
                         iconType="material-community"
                         checkedIcon="checkbox-marked"
                         uncheckedIcon="checkbox-blank-outline"
-                        checkedColor="#ffffff" 
+                        checkedColor={lightMode ? 'black' : "#ffffff"}
                         
-                        containerStyle={[{padding:0}, styles.containerDark ]}
+                        containerStyle={[{padding:0}, lightMode ? styles.containerLight :styles.containerDark  ]}
                 />
             </View>
-            <TextInput
-                style={[styles.textDark, style.text, {textDecorationLine:checked && text.length ? 'line-through' : 'none'}]}
+            <CustomTextInput
+                style={{...style.text,textDecorationLine:checked && text.length ? 'line-through' : 'none'}}
                 placeholder='checkbox item'
                 placeholderTextColor={'gray'}
                 ref={textInputRef}

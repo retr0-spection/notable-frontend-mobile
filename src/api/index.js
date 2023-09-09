@@ -1,4 +1,4 @@
-const domain = 'http://localhost:8000'
+const domain = 'http://localhost:8000' //'http://ec2-54-147-88-44.compute-1.amazonaws.com'
 
 
 
@@ -21,7 +21,11 @@ export const NOTEAPI = {
     UPDATE : domain + '/api/v1/note/update/',
     DELETE : domain + '/api/v1/note/delete/',
     GET : domain + '/api/v1/note/get/',
-    LIST : domain + '/api/v1/note/list'
+    LIST : domain + '/api/v1/note/list/',
+    SYNC : domain + '/api/v1/note/sync/',
+    
+
+
 }
 
 
@@ -30,6 +34,8 @@ export const AUTHAPI = {
         GET : domain + '/api/v1/auth/profile/get/',
     },
     AUTH : {
+        APPLE : domain + '/api/v1/auth/apple/',
+        GOOGLE : domain + '/api/v1/auth/google/',
         LOGIN : domain + '/api/v1/auth/log-in/',
         SIGNUP : domain + '/api/v1/auth/sign-up/'
     }

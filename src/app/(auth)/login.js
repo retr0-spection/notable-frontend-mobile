@@ -64,7 +64,8 @@ const LoginComponent = () => {
                 dispatch(setProfile(response.data))
                 dispatch(setLoggedIn(true))
                 router.replace('/home')
-            }).catch(() => {
+            }).catch((e) => {
+                console.warn(e.message)
                 setError(true)
                 setErrorMessage('Invalid credentials, please try again')
             })

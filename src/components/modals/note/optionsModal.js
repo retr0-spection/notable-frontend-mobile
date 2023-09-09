@@ -1,9 +1,9 @@
 //import liraries
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
-import ActionSheet from 'react-native-actions-sheet';
 import OptionItem from './optionItem';
 import { styles } from '../../../styles';
+import ActionSheet from 'react-native-actions-sheet';
 
 // create a component
 const OptionsModal = (props) => {
@@ -16,19 +16,24 @@ const OptionsModal = (props) => {
 
 
     return (
-        <ActionSheet
-            ref={actionRef}
-            containerStyle={[styles.containerDark,{
-                height: '40%',
-                paddingHorizontal:'7%',
-            }]}
-            gestureEnabled
-        >
-            <View style={[{paddingTop:'5%'}, styles.containerDark]}>
-               <FlatList renderItem={renderItem} data={props.options}  />
-            </View>
+        <View>
 
-        </ActionSheet>
+            <ActionSheet
+                ref={actionRef}
+                containerStyle={[{
+                    height: '40%',
+                    paddingHorizontal:'7%',
+                    ...styles.containerDark,
+                }]}
+                
+                gestureEnabled
+            >
+                <View style={[{paddingTop:'5%'}]}>
+                <FlatList renderItem={renderItem}  data={props.options}  />
+                </View>
+
+            </ActionSheet>
+        </View>
     );
     
 };

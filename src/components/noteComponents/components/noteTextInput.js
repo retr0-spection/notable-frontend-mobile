@@ -1,6 +1,7 @@
 //import liraries
 import React, { Component, useEffect, useImperativeHandle } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
+import CustomTextInput from '../../../styles/customNativeComponents/textinput';
 
 // create a component
 const NoteTextInput = React.forwardRef((props, ref) => {
@@ -104,7 +105,7 @@ const NoteTextInput = React.forwardRef((props, ref) => {
 
     return (
         <View style={{ paddingHorizontal: '3%' }} >
-            <TextInput
+            <CustomTextInput
                 style={styles.text}
                 placeholder='Text Block'
                 placeholderTextColor='gray'
@@ -112,6 +113,7 @@ const NoteTextInput = React.forwardRef((props, ref) => {
                 onChangeText={onEdit}
                 onFocus={onFocus}
                 multiline
+                scrollEnabled={false}
                 defaultValue={text}
                 selectionColor={'white'}
                 onEndEditing={_signalEditingDone}
@@ -127,7 +129,6 @@ const NoteTextInput = React.forwardRef((props, ref) => {
 const styles = StyleSheet.create({
     text: {
         fontSize: 18,
-        color:'white',
     }
 })
 

@@ -2,11 +2,15 @@ import React, { useEffect, useImperativeHandle } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import MathView, { MathText } from 'react-native-math-view';
 import { generateRandomUuid } from "../../../utils/generators";
+import CustomTextInput from "../../../styles/customNativeComponents/textinput";
+import { useSelector } from "react-redux";
+import { selectLightMode } from "../../../../redux/slices/dataSlice";
 
 const LatexComponent = React.forwardRef((props, ref) => {
     const [edit, setEdit] = React.useState(false)
     const textInputRef = React.useRef()
     const [text, setText] = React.useState('')
+    const lightMode = useSelector(selectLightMode)
 
     useImperativeHandle(ref, () => ({
         focus,
@@ -132,12 +136,12 @@ const LatexComponent = React.forwardRef((props, ref) => {
                 <Pressable onPress={() => setEdit(true)}>
                     <MathView math={text}
                             config={{inline:true}}
-                            color='white'
+                            color={lightMode ? 'black' :'white'}
                             renderError={({ error }) => <Text style={[{ marginVertical: 10, fontWeight: 'bold', backgroundColor: 'red' }]}>{error.name} {error.message}</Text>}
                     /> 
                 </Pressable>
             : 
-            <TextInput 
+            <CustomTextInput 
                 style={styles.text}
                 placeholder='latex block'
                 placeholderTextColor={'gray'}
@@ -167,7 +171,6 @@ const styles = StyleSheet.create({
         paddingBottom:5,
         backgroundColor:'#202020',
         padding:'2%',
-        color:'white'
 }})
 
 export default LatexComponent

@@ -8,28 +8,41 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { styles } from '../../styles';
 import { Pressable } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { refreshProfile } from '../../../redux/slices/userSlice';
+import { uploadAllNotes } from '../../../redux/slices/noteSlice';
+import { selectLightMode } from '../../../redux/slices/dataSlice';
+import { StatusBar } from 'expo-status-bar';
 
 // create a component
 const TabLayout = () => {
     const dispatch = useDispatch()
+    const lightMode = useSelector(selectLightMode)
 
     useEffect(() => {
         const listener = AppState.addEventListener('change', (e) => {
           if (e === 'active'){
             console.warn('App has come to the foreground');
             dispatch(refreshProfile())
+          }else if (e === 'background'){
+            // syncing notes
+            dispatch(uploadAllNotes())
           }
         })
     
         return listener.remove
     
       },[])
+
+      const adaptiveStyle = React.useMemo(() => ({
+        color:lightMode ? 'dark' : 'light'
+      }), [lightMode])
+    
     
     return (
         <>
-            <Tabs  screenOptions={{tabBarActiveTintColor:styles.tabBarActive.dark, tabBarInactiveTintColor:'gray', tabBarStyle:styles.tabBar.dark}}>
+        <StatusBar style={adaptiveStyle.color} />
+            <Tabs  screenOptions={{tabBarActiveTintColor: lightMode ? styles.tabBarActive.light : styles.tabBarActive.dark, tabBarInactiveTintColor:'gray', tabBarStyle:lightMode ? styles.tabBar.light :styles.tabBar.dark}}>
                 <Tabs.Screen name="home" options={{ title: 'Home',
                  headerShown: false,
                  tabBarIcon: ({ color, size }) => (

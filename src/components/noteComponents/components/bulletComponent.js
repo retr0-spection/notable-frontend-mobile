@@ -5,6 +5,7 @@ import { CheckBox } from '@rneui/themed';
 import { generateRandomUuid } from '../../../utils/generators';
 import { styles } from '../../../styles';
 import Entypo from 'react-native-vector-icons/Entypo'
+import CustomTextInput from '../../../styles/customNativeComponents/textinput';
 // create a component
 const BulletComponent = React.forwardRef((props, ref) => {
     const textInputRef = React.useRef();
@@ -143,8 +144,8 @@ const BulletComponent = React.forwardRef((props, ref) => {
             <View>
                 <Entypo name='dot-single' color={'white'} size={24} />
             </View>
-            <TextInput
-                style={[styles.textDark, style.text]}
+            <CustomTextInput
+                style={style.text}
                 placeholder='bullet item'
                 placeholderTextColor={'gray'}
                 ref={textInputRef}

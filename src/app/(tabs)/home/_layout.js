@@ -6,7 +6,7 @@ import { View, Text, StyleSheet } from 'react-native';
 const Layout = () => {
     return (
         <Stack>
-            <Stack.Screen name="index"  options={{title:'Home',headerShown:false}}  />
+            <Stack.Screen name="index"  options={{title:'Home',headerShown:false}}   />
         </Stack>
     );
 };

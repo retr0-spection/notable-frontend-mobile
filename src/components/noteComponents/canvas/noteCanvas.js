@@ -6,6 +6,7 @@ import { generateRandomUuid } from "../../../utils/generators";
 import OptionsComponent from "../../inputComponents/optionsComponent";
 import DraggableFlatList, { ScaleDecorator } from "react-native-draggable-flatlist";
 import TitleHeader from "../components/titleHeader";
+import { useSelector } from "react-redux";
 
 
 const NoteCanvas = (props) => {
@@ -97,6 +98,7 @@ const NoteCanvas = (props) => {
                    {header()}
                    </>
                 }
+          
                 keyExtractor={(item) => item.id}
                 renderItem={renderItem}
                 contentContainerStyle={[styles.spanParent, { paddingHorizontal: '3%' }]}

@@ -7,9 +7,12 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Animated, { Extrapolate, interpolate, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated'
 import _ from 'lodash'
+import { useSelector } from 'react-redux'
+import { selectLightMode } from '../../../redux/slices/dataSlice'
 
 
 const OptionsComponent = (props) => {
+    const lightMode = useSelector(selectLightMode)
     const [keyboardVisible, setKeyboardVisible] = React.useState(false)
     const t = useSharedValue(0)
 
@@ -166,24 +169,24 @@ const OptionsComponent = (props) => {
 
                 <ScrollView keyboardShouldPersistTaps={'always'} horizontal contentContainerStyle={{paddingHorizontal:'5%', alignItems:'center'}}>
                     <OptionContainer action={addToDoComponent}>
-                        <MaterialCommunityIcons name='checkbox-blank-outline' color={'white'}  size={20} />
+                        <MaterialCommunityIcons name='checkbox-blank-outline' color={lightMode ? 'black' :'white'}  size={20} />
                     </OptionContainer>
                     <OptionContainer>
-                        <MaterialCommunityIcons name='format-letter-case' color={'white'}  size={24} />
+                        <MaterialCommunityIcons name='format-letter-case' color={lightMode ? 'black' :'white'}  size={24} />
                     </OptionContainer>
                     <OptionContainer action={showImageOptions}>
-                        <EvilIcons name='image' color={'white'}  size={28} />
+                        <EvilIcons name='image' color={lightMode ? 'black' :'white'}  size={28} />
                     </OptionContainer>
                     <OptionContainer action={addLatex}>
-                        <MaterialCommunityIcons name='less-than-or-equal' color={'white'} size={20} />
+                        <MaterialCommunityIcons name='less-than-or-equal' color={lightMode ? 'black' :'white'} size={20} />
                     </OptionContainer>
                     <OptionContainer action={addBullet}>
-                        <Text style={{color:'white'}}>
+                        <Text style={{color:lightMode ? 'black' :'white'}}>
                             B
                         </Text>
                     </OptionContainer>
                     <OptionContainer action={addNumbered}>
-                        <Text style={{color:'white'}}>
+                        <Text style={{color:lightMode ? 'black' :'white'}}>
                             Num
                         </Text>
                     </OptionContainer>

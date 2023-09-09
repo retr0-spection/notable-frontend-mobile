@@ -2,6 +2,8 @@
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTLinkingManager.h>
+#import <GoogleSignIn/GIDSignIn.h>
+
 
 @implementation AppDelegate
 

@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios';
 import { TASKAPI, WORKSPACEAPI } from '../../src/api';
-
+import {  initialState as noteInit } from '../slices/noteSlice'
+import {  initialState as userInit } from '../slices/userSlice'
 
 
 // notes are stored with template
@@ -11,13 +12,14 @@ import { TASKAPI, WORKSPACEAPI } from '../../src/api';
 //{id(has), fk(note_id), ...content}
 
 // normalize data, DO NOT NEST (try to keep it 1 level deep to object/s)
-const initialState = {
+export const initialState = {
     workspaces:[],
     selectedWorkspace: null,
     projects:[],
     selectedProject: null,
     tasks: [],
-    selectedTask: null
+    selectedTask: null,
+    lightMode: false,
 }
 
 export const dataSlice = createSlice({
@@ -41,6 +43,9 @@ export const dataSlice = createSlice({
       },
       setSelectedTask : (state, action) => {
         state.selectedTask = action.payload;
+      },
+      setLightMode : (state, action) => {
+        state.lightMode = action.payload;
       }
 
     },
@@ -86,12 +91,27 @@ export const getTasks = createAsyncThunk('tasks/list', async (dispatch, {getStat
 })
 
 
+export const LOGOUT = createAsyncThunk('sys/clean', async (dispatch, {getState}) => {
+  const state = getState()
 
-export const { setWorkspaces, setProjects, setSelectedWorkspace, setSelectedProject, setSelectedTask, setTasks } = dataSlice.actions
+  // reset datastore
+  state.data = initialState,
+
+  // reset notestore
+  state.notes = noteInit
+
+  // reset user
+  state.user = userInit
+
+    
+})
+
+export const { setWorkspaces, setProjects, setSelectedWorkspace, setSelectedProject, setSelectedTask, setTasks, setLightMode } = dataSlice.actions
 export const selectWorkspaces = (state) => state.data.workspaces
 export const selectSelectedWorkspace = (state) => state.data.selectedWorkspace
 export const selectProjects = (state) => state.data.projects
 export const selectSelectedProject = (state) => state.data.selectedProject
 export const selectTasks = (state) => state.data.tasks
 export const selectSelectedTask = (state) => state.data.selectedTask
+export const selectLightMode = (state) => state.data.lightMode
 export default dataSlice.reducer

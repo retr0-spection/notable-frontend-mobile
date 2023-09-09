@@ -2,13 +2,19 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
     containerLight : {
-        backgroundColor:'#fff'
+        backgroundColor:'#ffffff'
     },
     containerDark : {
         backgroundColor:'#181818'
     },
     subContainerDark : {
         backgroundColor:'#2f2f2f'
+    },
+    subContainerLight : {
+        backgroundColor:'#ffffff'
+    },
+    spanParent : {
+        height:'100%'
     },
     textLight : {
         color:'black'

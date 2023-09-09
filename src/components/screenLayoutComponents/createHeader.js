@@ -5,9 +5,12 @@ import { TouchableOpacity } from 'react-native';
 import { View, Text, StyleSheet } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Feather from 'react-native-vector-icons/Feather'
+import { useSelector } from 'react-redux';
+import { selectLightMode } from '../../../redux/slices/dataSlice';
 
 // create a component
 const CreateHeader = (props) => {
+    const lightMode = useSelector(selectLightMode)
     const router = useRouter()
 
     return (
@@ -17,7 +20,7 @@ const CreateHeader = (props) => {
                     router.back();
                 }}
             >
-                <MaterialIcons name="arrow-back-ios" color={'white'} size={25} />
+                <MaterialIcons name="arrow-back-ios" color={lightMode ?'black' :'white'} size={25} />
             </TouchableOpacity>
 
 
@@ -25,7 +28,7 @@ const CreateHeader = (props) => {
           <View style={{flexDirection:'row'}}>
                 {/* quick options and more */}
                 <TouchableOpacity  onPress={props.options}>
-                    <Feather name="more-horizontal" size={24} color="white" style={{paddingHorizontal:'2%'}} />
+                    <Feather name="more-horizontal" size={24} color={lightMode ? 'black' :"white"} style={{paddingHorizontal:'2%'}} />
                 </TouchableOpacity>
           </View>
         </View>

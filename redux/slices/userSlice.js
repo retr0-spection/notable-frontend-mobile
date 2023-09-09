@@ -4,7 +4,7 @@ import { AUTHAPI } from '../../src/api';
 
 
 // normalize data, DO NOT NEST (try to keep it 1 level deep to object/s)
-const initialState = {
+export const initialState = {
     profile:null,
     loggedIn:false,
 }

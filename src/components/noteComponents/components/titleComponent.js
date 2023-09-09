@@ -2,6 +2,7 @@
 import React, { Component, useEffect, useImperativeHandle } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 import { generateRandomUuid } from '../../../utils/generators';
+import CustomTextInput from '../../../styles/customNativeComponents/textinput';
 
 // create a component
 const TitleComponent = React.forwardRef((props, ref) => {
@@ -96,7 +97,7 @@ const TitleComponent = React.forwardRef((props, ref) => {
 
     return (
         <View style={{ paddingHorizontal: '3%' }} >
-            <TextInput 
+            <CustomTextInput 
                 style={styles.text}
                 placeholder='Untitled'
                 ref={textInputRef}

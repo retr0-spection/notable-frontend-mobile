@@ -3,6 +3,7 @@ import React, { Component, useEffect, useImperativeHandle } from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
 import { generateRandomUuid } from '../../../utils/generators';
 import { useNavigation } from 'expo-router';
+import CustomTextInput from '../../../styles/customNativeComponents/textinput';
 
 // create a component
 const TitleHeader = React.forwardRef((props, ref) => {
@@ -87,7 +88,7 @@ const TitleHeader = React.forwardRef((props, ref) => {
 
     return (
         <View style={{ paddingHorizontal: '3%' }} >
-            <TextInput 
+            <CustomTextInput 
                 style={styles.text}
                 placeholder='Untitled'
                 placeholderTextColor={'gray'}
@@ -108,7 +109,6 @@ const styles = StyleSheet.create({
     text : {
         fontSize:26,
         fontWeight:'bold',
-        color:'white'
     }
 })
 

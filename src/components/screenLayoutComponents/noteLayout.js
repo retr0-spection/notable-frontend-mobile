@@ -1,6 +1,6 @@
 //import liraries
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { View, ScrollView, SafeAreaView, InputAccessoryView, KeyboardAvoidingView, Text, Keyboard } from 'react-native';
+import { View, ScrollView, SafeAreaView, InputAccessoryView, KeyboardAvoidingView, Text, Keyboard, Pressable, Dimensions } from 'react-native';
 import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { cancelAnimation, runOnJS, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,21 +8,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { styles } from './styles';
 import NoteBlock from '../noteComponents/models/noteBlock';
 import CreateHeader from './createHeader';
-import { uploadNote, deleteNoteEntry, selectNotes } from '../../../redux/slices/noteSlice';
+import { uploadNote, selectNotes, deleteNote } from '../../../redux/slices/noteSlice';
 import { generateRandomUuid } from '../../utils/generators';
 import NoteCanvas from '../noteComponents/canvas/noteCanvas';
 import OptionsComponent from '../inputComponents/optionsComponent';
 import { SheetManager, SheetProvider, registerSheet } from "react-native-actions-sheet";
 import OptionsModal from '../modals/note/optionsModal';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { deleteNote } from '../../utils/actions/noteActions';
-import { selectSelectedWorkspace } from '../../../redux/slices/dataSlice';
+import { selectLightMode, selectSelectedWorkspace } from '../../../redux/slices/dataSlice';
+import CustomSafeAreaView from '../../styles/customNativeComponents/safeAreaView';
 
 
 
 
 // create a component
 const NoteLayout = (props) => {
+    const lightMode = useSelector(selectLightMode)
     const params = useLocalSearchParams()
     const localNotes = useSelector(selectNotes)
     const [notes, setNotes] = useState(null)
@@ -51,7 +52,7 @@ const NoteLayout = (props) => {
     }
 
     const removeNote = () => {
-        deleteNote(dispatch, { hash: init.current })
+        dispatch(deleteNote({ hash: init.current }))
         setDeleting(true)
     }
 
@@ -138,7 +139,7 @@ const NoteLayout = (props) => {
                     dispatch(uploadNote(data))
                 } else {
                     // delete if none
-                    deleteNote(dispatch, data)
+                    dispatch(deleteNote(data))
                 }
             }
     }
@@ -177,6 +178,7 @@ const NoteLayout = (props) => {
 
         return listener
     }, [noteBlocks, deleting])
+    
 
 
     // check state 
@@ -258,26 +260,28 @@ const NoteLayout = (props) => {
 
 
     return (
-        <SafeAreaView style={styles.container}>
+        <CustomSafeAreaView style={styles.container}>
             <CreateHeader save={saveNote} options={openOptions} />
-            <View style={[styles.spanParent, { paddingTop: '5%' }]}>
+        
+            <ScrollView style={[styles.spanParent, { paddingTop: '3%'}]} >
                 {/* canvas body */}
-                <NoteCanvas
-                    noteBlocks={noteBlocks}
-                    setNoteBlocks={setNoteBlocks}
-                    title={title}
-                    titleRef={titleRef}
-                    noteBlocksRef={noteBlocksRef}
-                    parentMethods={parentMethods}
-                    autoFocus={props.new}
-                    setFocusedBlock={setFocusedBlock}
-                />
-            </View>
+                    <NoteCanvas
+                        noteBlocks={noteBlocks}
+                        setNoteBlocks={setNoteBlocks}
+                        title={title}
+                        titleRef={titleRef}
+                        noteBlocksRef={noteBlocksRef}
+                        parentMethods={parentMethods}
+                        autoFocus={!params.hash}
+                        setFocusedBlock={setFocusedBlock}
+                    />
+                
+            </ScrollView>
 
             <OptionsComponent noteBlocksRef={noteBlocksRef} focusedBlock={focusedBlock} addComponent={addComponent} />
-            <SheetProvider context="optionsSheet">
-            </SheetProvider>
-        </SafeAreaView>
+                <SheetProvider context="optionsSheet">
+                </SheetProvider>
+        </CustomSafeAreaView>
 
     );
 };
